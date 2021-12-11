@@ -9,9 +9,9 @@
     - React
 - バックエンド
   - 言語
-    - TypeScript
+    - Go
   - フレームワーク
-    - Express(Node.js)
+    - Echo
 - データベース
   - 必要になったら考える。
 
