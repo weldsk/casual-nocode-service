@@ -2,18 +2,22 @@
   text-align: center;
 }
 
-.App-logo {
+.Home {
+  text-align: center;
+}
+
+.Home-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
+  .Home-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
-.App-header {
+.Home-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -24,7 +28,7 @@
   color: white;
 }
 
-.App-link {
+.Home-link {
   color: #61dafb;
 }
 
