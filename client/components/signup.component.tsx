@@ -1,23 +1,53 @@
-import React, { Component } from "react";
+import React, { Component, FormEvent } from "react";
+import axios, {AxiosResponse, AxiosError} from "axios";
 
-export default class SignUp extends Component {
+type RegistrationState = {
+  name:string,
+  email:string,
+  password:string
+};
+export default class SignUp extends Component<{}, RegistrationState> {
+  constructor(props: {}){
+    super(props);
+    this.state={
+      name:"",
+      email:"",
+      password:"",
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event:FormEvent<HTMLFormElement>) {//Post Request
+    const postData = {
+        name:this.state.name,
+        email:this.state.email,
+        password:this.state.password
+    }
+    axios.post("http://localhost:1323/signup",postData,
+    //{withCredentials:true}
+    ).then((response:AxiosResponse)=>{
+      console.log("registration response",response);//確認用
+    }).catch((error:AxiosError)=>{
+      console.log("registration error",error);//確認用
+    })
+    event.preventDefault();
+  }
+
   render() {
     return (
-      <form>
+      <form onSubmit={this.handleSubmit}>
         <h3>Sign Up</h3>
 
         <div className="form-group">
-          <label>First name</label>
+          <label>User name</label>
           <input
             type="text"
             className="form-control"
-            placeholder="First name"
+            placeholder="User name"
+            value={this.state.name}
+            onChange={(event:React.ChangeEvent<HTMLInputElement>) =>
+              this.setState({name:event.target.value})}
           />
-        </div>
-
-        <div className="form-group">
-          <label>Last name</label>
-          <input type="text" className="form-control" placeholder="Last name" />
         </div>
 
         <div className="form-group">
@@ -26,6 +56,9 @@ export default class SignUp extends Component {
             type="email"
             className="form-control"
             placeholder="Enter email"
+            value={this.state.email}
+            onChange={(event:React.ChangeEvent<HTMLInputElement>) =>
+              this.setState({email:event.target.value})}
           />
         </div>
 
@@ -35,10 +68,16 @@ export default class SignUp extends Component {
             type="password"
             className="form-control"
             placeholder="Enter password"
+            value={this.state.password}
+            onChange={(event:React.ChangeEvent<HTMLInputElement>) =>
+              this.setState({password:event.target.value})}
           />
         </div>
 
-        <button type="submit" className="btn btn-primary btn-block">
+        <button
+         type="submit"
+         className="btn btn-primary btn-block"
+        >
           Sign Up
         </button>
         <p className="forgot-password text-right">
