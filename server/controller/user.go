@@ -37,7 +37,11 @@ func LoginUser(c echo.Context) error {
 	}
 
 	user := new(models.User)
-	result := db.First(&user, "email = ?", param.Email)
+	result := db.
+		Where("email == ?", param.Email).
+		Limit(1).
+		Find(&user)
+
 	if result.Error != nil {
 		return err
 	}
