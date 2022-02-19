@@ -6,6 +6,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Login from "./components/login.component";
 import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
+import NotFoundPage from "./components/notfound.component";
 
 function App() {
   return (
@@ -13,17 +14,17 @@ function App() {
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
         <div className="container">
           <Link className="navbar-brand" to={"/"}>
-            cncs 
+            cncs
           </Link>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
-                <Link className="nav-link" to={"/sign-in"}>
+                <Link className="nav-link" to={"/login"}>
                   Login
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to={"/sign-up"}>
+                <Link className="nav-link" to={"/signup"}>
                   Sign up
                 </Link>
               </li>
@@ -54,6 +55,7 @@ function App() {
             </div>
           }
         />
+        <Route path="*" element={<NotFoundPage />}/>
       </Routes>
     </div>
   );
