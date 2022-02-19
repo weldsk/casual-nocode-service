@@ -74,8 +74,8 @@ export default class SignUp extends Component<{}, RegistrationState> {
         </div>
 
         <button
-         type="submit"
-         className="btn btn-primary btn-block"
+          type="submit"
+          className="btn btn-primary btn-block"
         >
           Sign Up
         </button>

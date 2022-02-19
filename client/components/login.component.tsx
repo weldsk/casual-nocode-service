@@ -17,8 +17,8 @@ export default class Login extends Component<{}, LoginState> {
 
   handleSubmit(event:FormEvent<HTMLFormElement>) {//Post Request
     const postData = {
-        email:this.state.email,
-        password:this.state.password
+      email:this.state.email,
+      password:this.state.password
     }
     axios.post(process.env.REACT_APP_API_URL+"/login",postData
     ).then((response:AxiosResponse)=>{
@@ -26,7 +26,7 @@ export default class Login extends Component<{}, LoginState> {
         localStorage.setItem("user",JSON.stringify(response.data))
       }
     }).catch((error:AxiosError)=>{
-      /*TOOD*/
+      /*TODO*/
     })
     event.preventDefault();
   }
