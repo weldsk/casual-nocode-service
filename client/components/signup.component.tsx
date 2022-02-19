@@ -23,12 +23,11 @@ export default class SignUp extends Component<{}, RegistrationState> {
         email:this.state.email,
         password:this.state.password
     }
-    axios.post(process.env.REACT_APP_API_URL+"/signup",postData,
-    //{withCredentials:true}
+    axios.post(process.env.REACT_APP_API_URL+"/signup",postData
     ).then((response:AxiosResponse)=>{
-      console.log("registration response",response);//確認用
+      /*TODO*/
     }).catch((error:AxiosError)=>{
-      console.log("registration error",error);//確認用
+      /*TODO*/
     })
     event.preventDefault();
   }

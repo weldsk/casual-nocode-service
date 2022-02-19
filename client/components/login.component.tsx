@@ -20,15 +20,13 @@ export default class Login extends Component<{}, LoginState> {
         email:this.state.email,
         password:this.state.password
     }
-    axios.post(process.env.REACT_APP_API_URL+"/login",postData,
-    //{withCredentials:true}
+    axios.post(process.env.REACT_APP_API_URL+"/login",postData
     ).then((response:AxiosResponse)=>{
       if(response.data.token) {
         localStorage.setItem("user",JSON.stringify(response.data))
       }
-      //console.log("registration response",response);//確認用
     }).catch((error:AxiosError)=>{
-      console.log("registration error",error);//確認用
+      /*TOOD*/
     })
     event.preventDefault();
   }
