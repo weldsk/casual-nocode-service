@@ -5,7 +5,7 @@ import { Routes, Route, Link } from "react-router-dom";
 
 import Login from "./components/login.component";
 import SignUp from "./components/signup.component";
-import Home from "./home";
+import Home from "./components/home.component";
 
 function App() {
   return (
@@ -35,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
-          path="/sign-in"
+          path="/login"
           element={
             <div className="auth-wrapper">
               <div className="auth-inner">
@@ -45,7 +45,7 @@ function App() {
           }
         />
         <Route
-          path="/sign-up"
+          path="/signup"
           element={
             <div className="auth-wrapper">
               <div className="auth-inner">
