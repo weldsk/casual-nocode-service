@@ -4,9 +4,6 @@
 
 .NotFoundPage {
   text-align: center;
-}
-
-.NotFoundPage-header {
   background-color: #ffffff;
   min-height: 100vh;
   display: flex;
