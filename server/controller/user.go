@@ -4,8 +4,6 @@ import (
 	"casual-nocode-service/database"
 	"casual-nocode-service/models"
 	"casual-nocode-service/token"
-	"crypto/sha256"
-	"encoding/hex"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -46,10 +44,10 @@ func LoginUser(c echo.Context) error {
 		return err
 	}
 
-	sha256 := sha256.Sum256([]byte(param.Password))
-	hashed := hex.EncodeToString(sha256[:])
-
-	if result.RowsAffected <= 0 || hashed != user.PasswordHashed {
+	if result.RowsAffected <= 0 {
+		return echo.ErrUnauthorized
+	}
+	if !user.Login(param.Password) {
 		return echo.ErrUnauthorized
 	}
 
@@ -88,9 +86,12 @@ func SignUpUser(c echo.Context) error {
 		// emailが登録済み
 		return c.NoContent(http.StatusConflict)
 	}
-	sha256 := sha256.Sum256([]byte(param.Password))
-	hashed := hex.EncodeToString(sha256[:])
-	user := models.User{Name: param.Name, Email: param.Email, PasswordHashed: hashed}
+
+	user := models.User{Name: param.Name, Email: param.Email}
+	err = user.SetPassword(param.Password)
+	if err != nil {
+		return err
+	}
 	result = db.Create(&user)
 	if result.Error != nil {
 		return err
