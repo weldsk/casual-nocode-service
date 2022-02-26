@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/middleware"
 )
 
 type jwtCustomClaims struct {
@@ -24,4 +25,11 @@ func CreateToken(user *models.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte("secret_key"))
+}
+
+func GetJwtConfig() middleware.JWTConfig {
+	return middleware.JWTConfig{
+		Claims:     &jwtCustomClaims{},
+		SigningKey: []byte("secret_key"),
+	}
 }
