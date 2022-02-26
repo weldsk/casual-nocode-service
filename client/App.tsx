@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "./App.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import axios, { AxiosResponse, AxiosError } from "axios";
 
 import Login from "./components/login.component";
@@ -19,14 +19,40 @@ function App() {
   })
 
   const checkLoginStatus = () => {
-    axios.get(process.env.REACT_APP_API_URL + "/restricted", { headers: authHeader() })
+    axios.get(process.env.REACT_APP_PRIVATE_API_URL + "/status", { headers: authHeader() })
       .then((response: AxiosResponse) => {
         setIsAuthenticated(true);
-        console.log("Login",response); //確認用
       }).catch((error: AxiosError) => {
         setIsAuthenticated(false);
-        console.log("Not login",error);//確認用
       })
+  }
+
+  const processLogout = () => {
+    /*TODO*/
+    localStorage.removeItem("user");
+  }
+
+  const switchNavbar = () => {
+    if (isAuthenticated) {
+      return (
+        <Nav onClick={processLogout}>
+          <Nav.Link href={"/"}>
+              Logout
+          </Nav.Link>
+        </Nav>
+      )
+    } else {
+      return (
+        <>
+          <Nav.Link href={"/login"}>
+            Login
+          </Nav.Link>
+          <Nav.Link href={"/signup"}>
+            Sign up
+          </Nav.Link>
+        </>
+      )
+    }
   }
 
   return (
@@ -39,12 +65,7 @@ function App() {
           <Navbar.Toggle aria-controls="navbarTogglerContent" />
           <Navbar.Collapse id="navbarTogglerContent">
             <Nav className="me-auto mb-2 mb-lg-0">
-              <Nav.Link href={"/login"}>
-                Login
-              </Nav.Link>
-              <Nav.Link href={"/signup"}>
-                Sign up
-              </Nav.Link>
+              {switchNavbar()}
             </Nav>
           </Navbar.Collapse>
         </Container>
