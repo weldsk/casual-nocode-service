@@ -13,6 +13,21 @@ import NotFoundPage from "./components/notfound.component";
 import authHeader from "./services/auth-header";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+    checkLoginStatus()
+  })
+
+  const checkLoginStatus = () => {
+    axios.get(process.env.REACT_APP_API_URL + "/restricted", { headers: authHeader() })
+      .then((response: AxiosResponse) => {
+        setIsAuthenticated(true);
+        console.log("Login",response); //確認用
+      }).catch((error: AxiosError) => {
+        setIsAuthenticated(false);
+        console.log("Not login",error);//確認用
+      })
+  }
 
   return (
     <div className="App">
