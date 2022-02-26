@@ -15,10 +15,10 @@ import authHeader from "./services/auth-header";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   useEffect(() => {
-    checkLoginStatus()
+    updateLoginStatus()
   })
 
-  const checkLoginStatus = () => {
+  const updateLoginStatus = () => {
     axios.get(process.env.REACT_APP_PRIVATE_API_URL + "/status", { headers: authHeader() })
       .then((response: AxiosResponse) => {
         setIsAuthenticated(true);
@@ -32,7 +32,7 @@ function App() {
     localStorage.removeItem("user");
   }
 
-  const switchNavbar = () => {
+  const displayNavbar = () => {
     if (isAuthenticated) {
       return (
         <Nav onClick={processLogout}>
@@ -65,7 +65,7 @@ function App() {
           <Navbar.Toggle aria-controls="navbarTogglerContent" />
           <Navbar.Collapse id="navbarTogglerContent">
             <Nav className="me-auto mb-2 mb-lg-0">
-              {switchNavbar()}
+              {displayNavbar()}
             </Nav>
           </Navbar.Collapse>
         </Container>
