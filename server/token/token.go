@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
@@ -32,4 +33,16 @@ func GetJwtConfig() middleware.JWTConfig {
 		Claims:     &jwtCustomClaims{},
 		SigningKey: []byte("secret_key"),
 	}
+}
+
+func GetName(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	return claims.Name
+}
+
+func GetId(c echo.Context) uint {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	return claims.ID
 }
