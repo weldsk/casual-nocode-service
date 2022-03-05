@@ -99,7 +99,7 @@ func SignUpUser(c echo.Context) error {
 	}
 	result = db.Create(&user)
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	return c.NoContent(http.StatusOK)
