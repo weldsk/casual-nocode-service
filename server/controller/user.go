@@ -42,7 +42,7 @@ func LoginUser(c echo.Context) error {
 		Limit(1).
 		Find(&user)
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	// アカウントが無い
