@@ -61,12 +61,6 @@ func LoginUser(c echo.Context) error {
 		return err
 	}
 
-	// ログアウトDB接続
-	db, err = database.Connect("logout_user")
-	if err != nil {
-		return err
-	}
-
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": token,
 	})
