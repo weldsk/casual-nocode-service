@@ -149,3 +149,6 @@ yarn-error.log*
 
 # sqlite
 *.db
+
+#key
+*.pem

@@ -2,6 +2,9 @@ package token
 
 import (
 	"casual-nocode-service/models"
+	"fmt"
+	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -24,12 +27,23 @@ func CreateToken(user *models.User) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte("secret_key"))
+	return token.SignedString([]byte(GetKey()))
 }
 
 func GetJwtConfig() middleware.JWTConfig {
 	return middleware.JWTConfig{
 		Claims:     &jwtCustomClaims{},
-		SigningKey: []byte("secret_key"),
+		SigningKey: []byte(GetKey()),
 	}
+}
+
+func GetKey() string {
+	file, err := os.Open("secret_key.pem")
+	if err != nil {
+		fmt.Println("error")
+	}
+	defer file.Close()
+
+	key, err := ioutil.ReadAll(file)
+	return string(key)
 }
