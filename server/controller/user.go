@@ -90,7 +90,7 @@ func SignUpUser(c echo.Context) error {
 		Find(&models.User{})
 
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	if result.RowsAffected > 0 {
