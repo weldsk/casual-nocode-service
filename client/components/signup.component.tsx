@@ -2,10 +2,10 @@ import React from "react";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { Form, Button } from "react-bootstrap";
 import * as yup from "yup";
-import { Formik,FormikHelpers } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import { useNavigate } from "react-router-dom";
 
-interface FormValues {
+interface SignUpFormValues {
   username: string,
   email: string,
   password: string,
@@ -17,8 +17,7 @@ const errorSchema = yup.object().shape({
     .required("Enter a username")
     .max(30, "Your username must be less than 30 characters")
     .matches(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,30}$/,
-    "Contains characters that cannot be used\n \
-    Only alphanumeric characters and '-' are allowed. The '-' cannot be used consecutively, at the beginning, or at the end."),
+      "Contains characters that cannot be used. Only alphanumeric characters and '-' are allowed. The '-' cannot be used consecutively, at the beginning, or at the end."),
   email: yup.string()
     .required("Enter a email")
     .email("Email is invalid or already registered"),
@@ -26,23 +25,22 @@ const errorSchema = yup.object().shape({
     .required("Enter a password")
     .matches(
       /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)[a-zA-Z\d]{8,50}$/,
-      "Your password must be between 8 and 50 characters.\n \
-      Must Contain One Uppercase, One Lowercase, One Number and one special case Character."
+      "Your password must be between 8 and 50 characters. Must Contain One Uppercase, One Lowercase, One Number and one special case Character."
     ),
   confirmPassword: yup.string()
     .required("Confirm your password")
     .oneOf([yup.ref('password'), null], "Passwords do not match"),
 });
 
-const SignUp: React.VFC<{}> = (props) => {
+const SignUp: React.VFC = () => {
   const navigate = useNavigate();
-  const initialValues: FormValues = {
+  const initialValues: SignUpFormValues = {
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   }
-  const onSubmit = (values: FormValues,actions : FormikHelpers<FormValues>) => {//Post Request
+  const onSubmit = (values: SignUpFormValues, actions: FormikHelpers<SignUpFormValues>) => {//Post Request
     const postData = {
       name: values.username,
       email: values.email,
@@ -50,11 +48,14 @@ const SignUp: React.VFC<{}> = (props) => {
     }
     axios.post(process.env.REACT_APP_API_URL + "/signup", postData
     ).then((response: AxiosResponse) => {
-      navigate("/");
+      navigate("/login");
       /*TODO*/
     }).catch((error: AxiosError) => {
-      if(error.response && error.response.status === 409){
-        actions.setErrors({email:"Email is invalid or already registered"})
+      if (error.response && error.response.status === 409) {
+        actions.setErrors({ email: "Email is invalid or already registered" })
+      }
+      else {
+        /*TODO*/
       }
     })
   };
@@ -81,6 +82,7 @@ const SignUp: React.VFC<{}> = (props) => {
               type="text"
               name="username"
               placeholder="User name"
+              autoComplete="username"
               value={values.username}
               onChange={handleChange}
               isInvalid={!!errors.username}
@@ -95,6 +97,7 @@ const SignUp: React.VFC<{}> = (props) => {
               type="email"
               name="email"
               placeholder="Enter email"
+              autoComplete="email"
               value={values.email}
               onChange={handleChange}
               isInvalid={!!errors.email}
@@ -109,6 +112,7 @@ const SignUp: React.VFC<{}> = (props) => {
               type="password"
               name="password"
               placeholder="Enter password"
+              autoComplete="new-password"
               value={values.password}
               onChange={handleChange}
               isInvalid={!!errors.password}
@@ -123,6 +127,7 @@ const SignUp: React.VFC<{}> = (props) => {
               type="password"
               name="confirmPassword"
               placeholder="Confirm password"
+              autoComplete="new-password"
               value={values.confirmPassword}
               onChange={handleChange}
               isInvalid={!!errors.confirmPassword}
