@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -33,7 +33,7 @@ const Login: React.VFC = () => {
     ).then((response: AxiosResponse) => {
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data))
-        navigate("/",{state:{dummyData: true}});
+        navigate("/");
       }
     }).catch((error: AxiosError) => {
       setFormAlertFlag(true);
@@ -53,8 +53,8 @@ const Login: React.VFC = () => {
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
           <h3>Sign In</h3>
-          <Alert show={formAlertFlag} variant="light"className="alert mb-0">
-          The account does not exist or the password is incorrect.
+          <Alert show={formAlertFlag} variant="light" className="alert mb-0">
+            The account does not exist or the password is incorrect.
           </Alert>
           <Form.Group className="mb-3">
             <Form.Label>Email address</Form.Label>
