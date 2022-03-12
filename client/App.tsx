@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "./App.css";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import axios, { AxiosResponse, AxiosError } from "axios";
 
 import Login from "./components/login.component";
