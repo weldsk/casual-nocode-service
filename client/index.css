@@ -19,7 +19,7 @@ h1,h2,h3,h4,h5,h6,label,span {
 
 body, html, .App, #root, .auth-wrapper {
   width: 100%;
-  height:auto;
+  height:100%;
 }
 
 .navbar-light {
@@ -36,6 +36,7 @@ body, html, .App, #root, .auth-wrapper {
   display: grid;
   text-align: left;
   padding-top: 100px;
+  height: auto;
 }
 
 .auth-inner {
