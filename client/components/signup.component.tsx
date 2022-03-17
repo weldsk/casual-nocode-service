@@ -24,8 +24,8 @@ const errorSchema = yup.object().shape({
   password: yup.string()
     .required("Enter a password")
     .matches(
-      /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)[a-zA-Z\d]{8,50}$/,
-      "Your password must be between 8 and 50 characters. Must Contain One Uppercase, One Lowercase, One Number and one special case Character."
+      /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?!.*?\\)[\x21-\x7e]{8,50}$/,
+      "Your password must be between 8 and 50 characters. Must contain one uppercase, one lowercase and one number."
     ),
   confirmPassword: yup.string()
     .required("Confirm your password")
