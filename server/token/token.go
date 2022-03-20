@@ -26,13 +26,13 @@ func CreateToken(user *models.User) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(GetKey()))
+	return token.SignedString([]byte(getKey()))
 }
 
 func GetJwtConfig() middleware.JWTConfig {
-	return middleware.JWgConfig{
+	return middleware.JWTConfig{
 		Claims:     &jwtCustomClaims{},
-		SigningKey: []byte(GetKey()),
+		SigningKey: []byte(getKey()),
 	}
 }
 
