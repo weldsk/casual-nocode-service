@@ -2,7 +2,6 @@ package token
 
 import (
 	"casual-nocode-service/models"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"time"
@@ -27,20 +26,20 @@ func CreateToken(user *models.User) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(GetKey()))
+	return token.SignedString([]byte(getKey()))
 }
 
 func GetJwtConfig() middleware.JWTConfig {
 	return middleware.JWTConfig{
 		Claims:     &jwtCustomClaims{},
-		SigningKey: []byte(GetKey()),
+		SigningKey: []byte(getKey()),
 	}
 }
 
-func GetKey() string {
-	file, err := os.Open("secret_key.pem")
+func getKey() string {
+	file, err := os.Open(os.Getenv("SECRET_KEY"))
 	if err != nil {
-		fmt.Println("error")
+		panic("failed get key")
 	}
 	defer file.Close()
 
