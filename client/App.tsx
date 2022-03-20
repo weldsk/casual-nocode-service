@@ -74,26 +74,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route
-          path="/login"
-          element={
-            <div className="auth-wrapper">
-              <div className="auth-inner">
-                <Login />
-              </div>
-            </div>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <div className="auth-wrapper">
-              <div className="auth-inner">
-                <SignUp />
-              </div>
-            </div>
-          }
-        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>

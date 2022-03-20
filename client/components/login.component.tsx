@@ -52,51 +52,55 @@ const Login: React.VFC = () => {
         errors,
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
-          <h3>Sign In</h3>
-          <Alert show={formAlertFlag} variant="light" className="alert mb-0">
-            The account does not exist or the password is incorrect.
-          </Alert>
-          <Form.Group className="mb-3">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              required
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              autoComplete="email"
-              value={values.email}
-              onChange={handleChange}
-              isInvalid={!!errors.email}
-            />
-            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              required
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              autoComplete="current-password"
-              value={values.password}
-              onChange={handleChange}
-              isInvalid={!!errors.password}
-            />
-            <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-2">
-            <Form.Check
-              type="checkbox"
-              id="remember-checkbox"
-              label="Remember me"
-            />
-          </Form.Group>
-          <Button type="submit">
-            Login
-          </Button>
-          <p className="forgot-password right">
-            Forgot <a href="#">password?</a>
-          </p>
+          <div className="auth-wrapper">
+            <div className="auth-inner">
+              <h3>Sign In</h3>
+              <Alert show={formAlertFlag} variant="light" className="alert mb-0">
+                The account does not exist or the password is incorrect.
+              </Alert>
+              <Form.Group className="mb-3">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  required
+                  type="email"
+                  name="email"
+                  placeholder="Enter email"
+                  autoComplete="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  isInvalid={!!errors.email}
+                />
+                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  required
+                  type="password"
+                  name="password"
+                  placeholder="Enter password"
+                  autoComplete="current-password"
+                  value={values.password}
+                  onChange={handleChange}
+                  isInvalid={!!errors.password}
+                />
+                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-2">
+                <Form.Check
+                  type="checkbox"
+                  id="remember-checkbox"
+                  label="Remember me"
+                />
+              </Form.Group>
+              <Button type="submit">
+                Login
+              </Button>
+              <p className="forgot-password right">
+                Forgot <a href="#">password?</a>
+              </p>
+            </div>
+          </div>
         </Form>
       )}
     </Formik>
