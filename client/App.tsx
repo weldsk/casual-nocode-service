@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import axios, { AxiosResponse, AxiosError } from "axios";
 
 import Login from "./components/login.component";
@@ -14,8 +14,9 @@ import authHeader from "./services/auth-header";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useLocation();
   useEffect(() => {
-    updateLoginStatus()
+    updateLoginStatus();
   })
 
   const updateLoginStatus = () => {
@@ -35,9 +36,9 @@ function App() {
   const displayNavbar = () => {
     if (isAuthenticated) {
       return (
-        <Nav onClick={processLogout}>
-          <Nav.Link href={"/"}>
-              Logout
+        <Nav>
+          <Nav.Link onClick={processLogout} href={"/"}>
+            Logout
           </Nav.Link>
         </Nav>
       )
@@ -73,26 +74,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route
-          path="/login"
-          element={
-            <div className="auth-wrapper">
-              <div className="auth-inner">
-                <Login />
-              </div>
-            </div>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <div className="auth-wrapper">
-              <div className="auth-inner">
-                <SignUp />
-              </div>
-            </div>
-          }
-        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
