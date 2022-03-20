@@ -73,73 +73,77 @@ const SignUp: React.VFC = () => {
         errors,
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
-          <h3>Sign Up</h3>
+          <div className="auth-wrapper">
+            <div className="auth-inner">
+              <h3>Sign Up</h3>
 
-          <Form.Group className="mb-3">
-            <Form.Label>User name</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              name="username"
-              placeholder="User name"
-              autoComplete="username"
-              value={values.username}
-              onChange={handleChange}
-              isInvalid={!!errors.username}
-            />
-            <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
-          </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>User name</Form.Label>
+                <Form.Control
+                  required
+                  type="text"
+                  name="username"
+                  placeholder="User name"
+                  autoComplete="username"
+                  value={values.username}
+                  onChange={handleChange}
+                  isInvalid={!!errors.username}
+                />
+                <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
+              </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              required
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              autoComplete="email"
-              value={values.email}
-              onChange={handleChange}
-              isInvalid={!!errors.email}
-            />
-            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-          </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  required
+                  type="email"
+                  name="email"
+                  placeholder="Enter email"
+                  autoComplete="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  isInvalid={!!errors.email}
+                />
+                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+              </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              required
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              autoComplete="new-password"
-              value={values.password}
-              onChange={handleChange}
-              isInvalid={!!errors.password}
-            />
-            <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-          </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  required
+                  type="password"
+                  name="password"
+                  placeholder="Enter password"
+                  autoComplete="new-password"
+                  value={values.password}
+                  onChange={handleChange}
+                  isInvalid={!!errors.password}
+                />
+                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+              </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Confirm password</Form.Label>
-            <Form.Control
-              required
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm password"
-              autoComplete="new-password"
-              value={values.confirmPassword}
-              onChange={handleChange}
-              isInvalid={!!errors.confirmPassword}
-            />
-            <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
-          </Form.Group>
-          <Button type="submit">
-            Sign Up
-          </Button>
-          <p className="forgot-password text-right">
-            Already registered <a href="#">sign in?</a>
-          </p>
+              <Form.Group className="mb-3">
+                <Form.Label>Confirm password</Form.Label>
+                <Form.Control
+                  required
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  autoComplete="new-password"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  isInvalid={!!errors.confirmPassword}
+                />
+                <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
+              </Form.Group>
+              <Button type="submit">
+                Sign Up
+              </Button>
+              <p className="forgot-password text-right">
+                Already registered <a href="#">sign in?</a>
+              </p>
+            </div>
+          </div>
         </Form>
       )}
     </Formik>
