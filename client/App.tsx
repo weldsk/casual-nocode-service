@@ -36,8 +36,8 @@ function App() {
   const displayNavbar = () => {
     if (isAuthenticated) {
       return (
-        <Nav onClick={processLogout}>
-          <Nav.Link href={"/"}>
+        <Nav>
+          <Nav.Link onClick={processLogout} href={"/"}>
             Logout
           </Nav.Link>
         </Nav>
