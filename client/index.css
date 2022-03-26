@@ -4,11 +4,12 @@
   box-sizing: border-box;
 }
 body {
-  background: #1C8EF9 !important;
+  background: #003333 !important;
   min-height: 100vh;
   display: flex;
   font-weight: 400;
   font-family: 'Fira Sans', sans-serif;
+  padding-top: 50px;
 }
 
 h1,h2,h3,h4,h5,h6,label,span {
@@ -54,6 +55,20 @@ body, html, .App, #root, .auth-wrapper {
   line-height: 1;
   padding-bottom: 20px;
 }
+
+.fill-page{
+  text-align: center;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:first baseline;
+  padding: 10px;
+  font-size: calc(10px + 2vmin);
+  color: rgb(0, 0, 0);
+}
+
 
 .custom-control-label {
   font-weight: 400;

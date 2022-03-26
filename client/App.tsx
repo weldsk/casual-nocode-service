@@ -9,6 +9,7 @@ import Login from "./components/login.component";
 import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
+import MyPage from "./components/mypage.component";
 
 import authHeader from "./services/auth-header";
 
@@ -36,6 +37,9 @@ function App() {
     if (isAuthenticated) {
       return (
         <Nav onClick={processLogout}>
+          <Nav.Link href={"/mypage"}>
+            My page
+          </Nav.Link>
           <Nav.Link href={"/"}>
               Logout
           </Nav.Link>
@@ -44,6 +48,7 @@ function App() {
     } else {
       return (
         <>
+          <div style={{ flexGrow: 1 }}></div>
           <Nav.Link href={"/login"}>
             Login
           </Nav.Link>
@@ -73,6 +78,14 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route
+          path="/mypage"
+          element={
+            <div className="">
+              <MyPage />
+            </div>
+          }
+        />
         <Route
           path="/login"
           element={

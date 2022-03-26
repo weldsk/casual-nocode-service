@@ -104,3 +104,17 @@ func SignUpUser(c echo.Context) error {
 
 	return c.NoContent(http.StatusOK)
 }
+
+func UserInfo(c echo.Context) error {
+	id := token.GetId(c)
+	db, err := database.Connect("users")
+	if err != nil {
+		return err
+	}
+	user := models.User{}
+	db.First(&user, id)
+	return c.JSON(http.StatusOK, echo.Map{
+		"username": user.Name,
+		"email":    user.Email,
+	})
+}
