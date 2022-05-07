@@ -105,7 +105,7 @@ func SignUpUser(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func UserInfo(c echo.Context) error {
+func GetUserInfo(c echo.Context) error {
 	id := token.GetId(c)
 	db, err := database.Connect("users")
 	if err != nil {

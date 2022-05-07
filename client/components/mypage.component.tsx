@@ -1,6 +1,6 @@
 
 import React, { Component, FormEvent } from "react";
-import { Form } from 'react-bootstrap';
+import { Card, Form } from 'react-bootstrap';
 import axios, {AxiosResponse, AxiosError} from "axios";
 import authHeader from "../services/auth-header";
 
@@ -12,19 +12,25 @@ export default class MyPage extends Component<{}, {}> {
   render() {
     return (
       <div className="fill-page">
-        <h3>MyPage</h3>
-        <label>{this.getName()}</label>
+        <h2>MyPage</h2>
+        <Card>
+          <Card.Header as="h3">Username</Card.Header>
+          <Card.Text>
+          {this.getName()}
+          </Card.Text>
+        </Card>
       </div>
     );
   }
   getName(): string
   {
-    axios.get(process.env.REACT_APP_PRIVATE_API_URL + "/status", { headers: authHeader() })
+    axios.get(process.env.REACT_APP_PRIVATE_API_URL + "/userinfo", { headers: authHeader() })
       .then((response: AxiosResponse) => {
-        return ""
+        return "aa"
       }).catch((error: AxiosError) => {
         // TODO
+        return "bb"
       })
-    return ""
+    return "(Loading...)"
   }
 }
