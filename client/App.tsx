@@ -30,13 +30,6 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
           </Route>
 
-          <Route element={<RedirectRoute
-            logined={true}
-            redirectPath={"/login"}
-          />}>
-            <Route path="/testpage" element={<TestPage />} />
-          </Route>
-
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
