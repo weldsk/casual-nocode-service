@@ -22,6 +22,7 @@ func Init() {
 	r := e.Group("/restricted")
 	r.Use(middleware.JWTWithConfig(token.GetJwtConfig()))
 	r.GET("/status", controller.GetStatus)
+	r.GET("/userinfo", controller.GetUserInfo)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
