@@ -1,9 +1,8 @@
 
-import React, { Component, FormEvent } from "react";
-import { Card, Form } from 'react-bootstrap';
+import { Component } from "react";
+import { Card } from 'react-bootstrap';
 import axios, {AxiosResponse, AxiosError} from "axios";
 import authHeader from "../services/auth-header";
-import { copyFileSync } from "fs";
 
 export default class MyPage extends Component<{}, { name: string, email: string}> {
   constructor(props: {}){
