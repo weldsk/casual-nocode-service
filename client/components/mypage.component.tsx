@@ -29,7 +29,7 @@ export default class MyPage extends Component<{}, { name: string, email: string}
   }
   render() {
     return (
-      <div className="fill-page">
+      <div className="full-page">
         <h2>MyPage</h2>
         <Card>
           <Card.Header as="h3">Username</Card.Header>

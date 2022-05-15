@@ -62,7 +62,7 @@ body, html, .App, #root, .auth-wrapper {
   padding-bottom: 20px;
 }
 
-.fill-page{
+.full-page{
   text-align: center;
   background-color: #ffffff;
   min-height: 100vh;
