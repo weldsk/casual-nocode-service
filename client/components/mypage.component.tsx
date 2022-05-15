@@ -4,7 +4,7 @@ import { Card } from 'react-bootstrap';
 import axios, {AxiosResponse, AxiosError} from "axios";
 import authHeader from "../services/auth-header";
 
-export default class MyPage extends Component<{}, { name: string, email: string}> {
+export default class MyPage extends Component<{}, { name: string, email: string }> {
   constructor(props: {}){
     super(props);
     this.state={
