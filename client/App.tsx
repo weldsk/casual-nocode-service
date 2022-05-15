@@ -23,7 +23,7 @@ function App() {
 
           <Route element={<RedirectRoute
             logined={true}
-            redirectPath={"/"}
+            redirectPath={"/login"}
           />}>
             <Route path="/mypage" element={<MyPage />} />
           </Route>
