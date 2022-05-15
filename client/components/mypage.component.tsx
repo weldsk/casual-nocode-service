@@ -33,15 +33,11 @@ export default class MyPage extends Component<{}, { name: string, email: string}
         <h2>MyPage</h2>
         <Card>
           <Card.Header as="h3">Username</Card.Header>
-          <Card.Text>
-          {this.state.name}
-          </Card.Text>
+          <Card.Text>{this.state.name}</Card.Text>
         </Card>
         <Card>
           <Card.Header as="h3">Email Address</Card.Header>
-          <Card.Text>
-          {this.state.email}
-          </Card.Text>
+          <Card.Text>{this.state.email}</Card.Text>
         </Card>
       </div>
     );
