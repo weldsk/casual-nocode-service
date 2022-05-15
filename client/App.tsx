@@ -6,6 +6,7 @@ import Login from "./components/login.component";
 import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
+import MyPage from "./components/mypage.component";
 
 import RedirectRoute from "./services/custom-router";
 import AuthProvider from "./services/use-auth";
@@ -19,6 +20,13 @@ function App() {
         <NavigationBar />
         <Routes>
           <Route path="/" element={<Home />} />
+
+          <Route element={<RedirectRoute
+            logined={true}
+            redirectPath={"/login"}
+          />}>
+            <Route path="/mypage" element={<MyPage />} />
+          </Route>
 
           <Route element={<RedirectRoute
             logined={false}
