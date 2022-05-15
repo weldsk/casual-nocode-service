@@ -20,7 +20,13 @@ function App() {
         <NavigationBar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/mypage" element={<MyPage />} />
+
+          <Route element={<RedirectRoute
+            logined={true}
+            redirectPath={"/"}
+          />}>
+            <Route path="/mypage" element={<MyPage />} />
+          </Route>
 
           <Route element={<RedirectRoute
             logined={false}
