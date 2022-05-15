@@ -8,8 +8,6 @@ import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
 import MyPage from "./components/mypage.component";
 
-import TestPage from "./components/testpage.component";
-
 import RedirectRoute from "./services/custom-router";
 import AuthProvider from "./services/use-auth";
 import NavigationBar from "./components/navbar.component";
@@ -22,6 +20,7 @@ function App() {
         <NavigationBar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/mypage" element={<MyPage />} />
 
           <Route element={<RedirectRoute
             logined={false}

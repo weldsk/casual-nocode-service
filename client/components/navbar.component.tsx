@@ -7,6 +7,9 @@ const NavigationBar = () => {
     if (isAuthenticated) {
       return (
         <Nav>
+          <Nav.Link href={"/mypage"}>
+            MyPage
+          </Nav.Link>
           <Nav.Link onClick={processLogout} href={"/"}>
             Logout
           </Nav.Link>
