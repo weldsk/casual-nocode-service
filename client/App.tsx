@@ -1,83 +1,36 @@
-import React, { useState, useEffect } from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { Navbar, Nav, Container } from "react-bootstrap";
 import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
-import axios, { AxiosResponse, AxiosError } from "axios";
 
 import Login from "./components/login.component";
 import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
 
-import authHeader from "./services/auth-header";
+import RedirectRoute from "./services/custom-router";
+import AuthProvider from "./services/use-auth";
+import NavigationBar from "./components/navbar.component";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   useLocation();
-  useEffect(() => {
-    updateLoginStatus();
-  })
-
-  const updateLoginStatus = () => {
-    axios.get(process.env.REACT_APP_PRIVATE_API_URL + "/status", { headers: authHeader() })
-      .then((response: AxiosResponse) => {
-        setIsAuthenticated(true);
-      }).catch((error: AxiosError) => {
-        setIsAuthenticated(false);
-      })
-  }
-
-  const processLogout = () => {
-    /*TODO*/
-    localStorage.removeItem("user");
-  }
-
-  const displayNavbar = () => {
-    if (isAuthenticated) {
-      return (
-        <Nav>
-          <Nav.Link onClick={processLogout} href={"/"}>
-            Logout
-          </Nav.Link>
-        </Nav>
-      )
-    } else {
-      return (
-        <>
-          <Nav.Link href={"/login"}>
-            Login
-          </Nav.Link>
-          <Nav.Link href={"/signup"}>
-            Sign up
-          </Nav.Link>
-        </>
-      )
-    }
-  }
-
   return (
     <div className="App">
-      <Navbar collapseOnSelect expand="lg" bg="light" fixed="top">
-        <Container fluid>
-          <Navbar.Brand href={"/"}>
-            cncs
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbarTogglerContent" />
-          <Navbar.Collapse id="navbarTogglerContent">
-            <Nav className="me-auto mb-2 mb-lg-0">
-              {displayNavbar()}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <AuthProvider>
+        <NavigationBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route element={<RedirectRoute
+            logined={false}
+            redirectPath={"/"}
+          />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </AuthProvider>
     </div>
   );
 }
