@@ -4,8 +4,6 @@ import (
 	"casual-nocode-service/database"
 	"casual-nocode-service/models"
 	"casual-nocode-service/token"
-	"crypto/sha256"
-	"encoding/hex"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -31,24 +29,33 @@ func LoginUser(c echo.Context) error {
 		return err
 	}
 
+	// ユーザDB接続
 	db, err := database.Connect("users")
 	if err != nil {
 		panic("failed to connect database")
 	}
 
+	// 登録済みユーザの検索
 	user := new(models.User)
-	result := db.First(&user, "email = ?", param.Email)
+	result := db.
+		Where("email == ?", param.Email).
+		Limit(1).
+		Find(&user)
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
-	sha256 := sha256.Sum256([]byte(param.Password))
-	hashed := hex.EncodeToString(sha256[:])
-
-	if result.RowsAffected <= 0 || hashed != user.PasswordHashed {
+	// アカウントが無い
+	if result.RowsAffected <= 0 {
 		return echo.ErrUnauthorized
 	}
 
+	// パスワードが異なる
+	if !user.Login(param.Password) {
+		return echo.ErrUnauthorized
+	}
+
+	// トークン生成
 	token, err := token.CreateToken(user)
 	if err != nil {
 		return err
@@ -77,20 +84,37 @@ func SignUpUser(c echo.Context) error {
 		Find(&models.User{})
 
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	if result.RowsAffected > 0 {
 		// emailが登録済み
 		return c.NoContent(http.StatusConflict)
 	}
-	sha256 := sha256.Sum256([]byte(param.Password))
-	hashed := hex.EncodeToString(sha256[:])
-	user := models.User{Name: param.Name, Email: param.Email, PasswordHashed: hashed}
+
+	user := models.User{Name: param.Name, Email: param.Email}
+	err = user.SetPassword(param.Password)
+	if err != nil {
+		return err
+	}
 	result = db.Create(&user)
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	return c.NoContent(http.StatusOK)
+}
+
+func GetUserInfo(c echo.Context) error {
+	id := token.GetId(c)
+	db, err := database.Connect("users")
+	if err != nil {
+		return err
+	}
+	user := models.User{}
+	db.First(&user, id)
+	return c.JSON(http.StatusOK, echo.Map{
+		"username": user.Name,
+		"email":    user.Email,
+	})
 }
