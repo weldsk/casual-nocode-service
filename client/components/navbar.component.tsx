@@ -1,5 +1,7 @@
 import { Container, Nav, Navbar } from "react-bootstrap"
 import { useAuth } from "../services/use-auth"
+import i18n from "../i18n/i18n";
+
 
 const NavigationBar = () => {
   const {isAuthenticated, processLogout} = useAuth();
@@ -8,7 +10,7 @@ const NavigationBar = () => {
       return (
         <Nav>
           <Nav.Link href={"/mypage"}>
-            MyPage
+            {i18n.t("header.MyPage")}
           </Nav.Link>
           <Nav.Link onClick={processLogout} href={"/"}>
             Logout
@@ -19,7 +21,7 @@ const NavigationBar = () => {
       return (
         <>
           <Nav.Link href={"/login"}>
-            Login
+            {i18n.t("header.MyPage")}
           </Nav.Link>
           <Nav.Link href={"/signup"}>
             Sign up

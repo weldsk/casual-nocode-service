@@ -12,7 +12,9 @@ import RedirectRoute from "./services/custom-router";
 import AuthProvider from "./services/use-auth";
 import NavigationBar from "./components/navbar.component";
 
-function App() {
+
+
+const App:React.VFC = () => {
   useLocation();
   return (
     <div className="App">
