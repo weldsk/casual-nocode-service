@@ -7,6 +7,7 @@ import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
 import MyPage from "./components/mypage.component";
+import EditorPage from "./components/editor.component";
 
 import RedirectRoute from "./services/custom-router";
 import AuthProvider from "./services/use-auth";
@@ -26,6 +27,7 @@ function App() {
             redirectPath={"/login"}
           />}>
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/editpage" element={<EditorPage />} />
           </Route>
 
           <Route element={<RedirectRoute
