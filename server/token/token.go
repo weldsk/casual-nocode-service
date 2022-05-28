@@ -2,7 +2,6 @@ package token
 
 import (
 	"casual-nocode-service/models"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -37,12 +36,10 @@ func GetJwtConfig() middleware.JWTConfig {
 }
 
 func getKey() string {
-	file, err := os.Open(os.Getenv("SECRET_KEY"))
+	key, err := os.Getenv("SECRET_KEY")
 	if err != nil {
 		panic("failed get key")
 	}
-	defer file.Close()
 
-	key, err := ioutil.ReadAll(file)
-	return string(key)
+	return key
 }
