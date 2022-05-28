@@ -36,8 +36,8 @@ func GetJwtConfig() middleware.JWTConfig {
 }
 
 func getKey() string {
-	key, err := os.Getenv("SECRET_KEY")
-	if err != nil {
+	key := os.Getenv("SECRET_KEY")
+	if key == "" {
 		panic("failed get key")
 	}
 
