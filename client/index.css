@@ -4,11 +4,12 @@
   box-sizing: border-box;
 }
 body {
-  background: #1C8EF9 !important;
+  background: #003333 !important;
   min-height: 100vh;
   display: flex;
   font-weight: 400;
   font-family: 'Fira Sans', sans-serif;
+  padding-top: 50px;
 }
 
 h1,h2,h3,h4,h5,h6,label,span {
@@ -26,15 +27,21 @@ body, html, .App, #root, .auth-wrapper {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
 }
 
+.alert {
+  color: rgb(231, 12, 12) !important;
+  font-weight: bold;
+}
+
 .auth-wrapper {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+  display: grid;
   text-align: left;
+  padding-top: 100px;
+  height: auto;
 }
 
 .auth-inner {
-  width: 450px;
+  min-width: 450px;
+  max-width: 550px;
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
@@ -54,6 +61,20 @@ body, html, .App, #root, .auth-wrapper {
   line-height: 1;
   padding-bottom: 20px;
 }
+
+.full-page{
+  text-align: center;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content:first baseline;
+  padding: 10px;
+  font-size: calc(10px + 2vmin);
+  color: rgb(0, 0, 0);
+}
+
 
 .custom-control-label {
   font-weight: 400;

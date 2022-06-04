@@ -29,28 +29,33 @@ func LoginUser(c echo.Context) error {
 		return err
 	}
 
+	// ユーザDB接続
 	db, err := database.Connect("users")
 	if err != nil {
 		panic("failed to connect database")
 	}
 
+	// 登録済みユーザの検索
 	user := new(models.User)
 	result := db.
 		Where("email == ?", param.Email).
 		Limit(1).
 		Find(&user)
-
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
+	// アカウントが無い
 	if result.RowsAffected <= 0 {
 		return echo.ErrUnauthorized
 	}
+
+	// パスワードが異なる
 	if !user.Login(param.Password) {
 		return echo.ErrUnauthorized
 	}
 
+	// トークン生成
 	token, err := token.CreateToken(user)
 	if err != nil {
 		return err
@@ -79,7 +84,7 @@ func SignUpUser(c echo.Context) error {
 		Find(&models.User{})
 
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	if result.RowsAffected > 0 {
@@ -94,8 +99,22 @@ func SignUpUser(c echo.Context) error {
 	}
 	result = db.Create(&user)
 	if result.Error != nil {
-		return err
+		return result.Error
 	}
 
 	return c.NoContent(http.StatusOK)
+}
+
+func GetUserInfo(c echo.Context) error {
+	id := token.GetId(c)
+	db, err := database.Connect("users")
+	if err != nil {
+		return err
+	}
+	user := models.User{}
+	db.First(&user, id)
+	return c.JSON(http.StatusOK, echo.Map{
+		"username": user.Name,
+		"email":    user.Email,
+	})
 }

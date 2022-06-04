@@ -5,7 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
@@ -42,4 +43,16 @@ func getKey() string {
 	}
 
 	return key
+
+func GetName(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	return claims.Name
+}
+
+func GetId(c echo.Context) uint {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	return claims.ID
+
 }
