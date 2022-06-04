@@ -1,5 +1,7 @@
 # CNCS
 
+[![Go](https://github.com/weldsk/casual-nocode-service/actions/workflows/go.yml/badge.svg)](https://github.com/weldsk/casual-nocode-service/actions/workflows/go.yml)
+
 ## Environment Variables
 
 Set the following environment variables.
