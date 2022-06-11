@@ -7,7 +7,7 @@ import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
 import MyPage from "./components/mypage.component";
-import EditorPage from "./components/editor.component";
+import EditorPage from "./components/editpage.component";
 
 import RedirectRoute from "./services/custom-router";
 import AuthProvider from "./services/use-auth";

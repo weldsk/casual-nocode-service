@@ -3,6 +3,7 @@ import Rete, { Node, NodeEditor } from "rete";
 import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
 import AreaPlugin from "rete-area-plugin";
+import ContextMenuPlugin from "rete-context-menu-plugin";
 import { MyNode } from "../../components/editor-node-view/retenode.component";
 import DockPlugin from "rete-dock-plugin";
 import {NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
@@ -112,25 +113,27 @@ export async function createEditor(container: HTMLElement) {
   var editor = new Rete.NodeEditor("demo@0.1.0", container);
   editor.use(ConnectionPlugin);
   editor.use(ReactRenderPlugin);
-  /*
+  
   editor.use(ContextMenuPlugin, {
     searchBar: false, // true by default
     //searchKeep: title => true, // leave item when searching, optional. For example, title => ['Refresh'].includes(title)
     delay: 100,
+    allocate(component) {
+      return null;
+  },
     rename(component) {
       return component.name;
     },
     nodeItems: {
-      'Delete': false, // don't show Delete item
-      'Clone': false // or Clone item
+      'Delete': true, // don't show Delete item
+      'Clone': true // or Clone item
     }
-
-  });*/
+  });
   editor.use(DockPlugin, {
     container: document.querySelector(".dock"),
     plugins:[ReactRenderPlugin],
     itemClass: "item"
-  })
+  });
 
   var engine = new Rete.Engine("demo@0.1.0");
 

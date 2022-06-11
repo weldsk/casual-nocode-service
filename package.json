@@ -23,6 +23,7 @@
     "rete": "^1.4.7",
     "rete-area-plugin": "^0.2.1",
     "rete-connection-plugin": "^0.9.0",
+    "rete-context-menu-plugin": "^0.6.0",
     "rete-dock-plugin": "^0.2.1",
     "rete-react-render-plugin": "^0.2.1",
     "typescript": "^4.5.5",
