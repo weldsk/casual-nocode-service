@@ -1,7 +1,6 @@
-package controller
+package handler
 
 import (
-	"casual-nocode-service/database"
 	"casual-nocode-service/models"
 	"casual-nocode-service/token"
 	"net/http"
@@ -23,21 +22,15 @@ type signupRequest struct {
 }
 
 // ユーザーログイン
-func LoginUser(c echo.Context) error {
+func (h *Handler) LoginUser(c echo.Context) error {
 	param := new(loginRequest)
 	if err := c.Bind(param); err != nil {
 		return err
 	}
 
-	// ユーザDB接続
-	db, err := database.Connect("users")
-	if err != nil {
-		panic("failed to connect database")
-	}
-
 	// 登録済みユーザの検索
 	user := new(models.User)
-	result := db.
+	result := h.DB.Users.
 		Where("email == ?", param.Email).
 		Limit(1).
 		Find(&user)
@@ -67,18 +60,13 @@ func LoginUser(c echo.Context) error {
 }
 
 // ユーザ作成
-func SignUpUser(c echo.Context) error {
+func (h *Handler) SignUpUser(c echo.Context) error {
 	param := new(signupRequest)
 	if err := c.Bind(param); err != nil {
 		return err
 	}
 
-	db, err := database.Connect("users")
-	if err != nil {
-		return err
-	}
-
-	result := db.
+	result := h.DB.Users.
 		Where("email == ?", param.Email).
 		Limit(1).
 		Find(&models.User{})
@@ -93,11 +81,11 @@ func SignUpUser(c echo.Context) error {
 	}
 
 	user := models.User{Name: param.Name, Email: param.Email}
-	err = user.SetPassword(param.Password)
+	err := user.SetPassword(param.Password)
 	if err != nil {
 		return err
 	}
-	result = db.Create(&user)
+	result = h.DB.Users.Create(&user)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -105,14 +93,11 @@ func SignUpUser(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func GetUserInfo(c echo.Context) error {
+// ユーザー情報取得
+func (h *Handler) GetUserInfo(c echo.Context) error {
 	id := token.GetId(c)
-	db, err := database.Connect("users")
-	if err != nil {
-		return err
-	}
 	user := models.User{}
-	db.First(&user, id)
+	h.DB.Users.First(&user, id)
 	return c.JSON(http.StatusOK, echo.Map{
 		"username": user.Name,
 		"email":    user.Email,
