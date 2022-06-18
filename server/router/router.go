@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-func Init() {
+func Init() *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.CORS())
 
@@ -25,4 +25,6 @@ func Init() {
 	r.GET("/userinfo", controller.GetUserInfo)
 
 	e.Logger.Fatal(e.Start(":1323"))
+
+	return e
 }
