@@ -101,6 +101,152 @@ class AddComponent extends Rete.Component {
   }
 }
 
+class SubComponent extends Rete.Component {
+  constructor() {
+    super("Sub");
+
+    this.data.component = MyNode; // optional
+  }
+
+  async builder(node:Node) {
+    var inp1 = new Rete.Input("num1", "Number", numSocket);
+    var inp2 = new Rete.Input("num2", "Number2", numSocket);
+    var out = new Rete.Output("num", "Number", numSocket);
+
+    inp1.addControl(new NumControl(this.editor, "num1", node));
+    inp2.addControl(new NumControl(this.editor, "num2", node));
+
+    node
+      .addInput(inp1)
+      .addInput(inp2)
+      .addControl(new NumControl(this.editor, "preview", node, true))
+      .addOutput(out);
+  }
+
+  worker(node, inputs, outputs) {
+    var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    var n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    var sum = n1 - n2;
+
+    this.editor?.nodes?.find((n) => n.id == node.id)?.controls.get("preview")?.setValue(sum);
+    outputs["num"] = sum;
+  }
+}
+
+class MulComponent extends Rete.Component {
+  constructor() {
+    super("Mul");
+
+    this.data.component = MyNode; // optional
+  }
+
+  async builder(node:Node) {
+    var inp1 = new Rete.Input("num1", "Number", numSocket);
+    var inp2 = new Rete.Input("num2", "Number2", numSocket);
+    var out = new Rete.Output("num", "Number", numSocket);
+
+    inp1.addControl(new NumControl(this.editor, "num1", node));
+    inp2.addControl(new NumControl(this.editor, "num2", node));
+
+    node
+      .addInput(inp1)
+      .addInput(inp2)
+      .addControl(new NumControl(this.editor, "preview", node, true))
+      .addOutput(out);
+  }
+
+  worker(node, inputs, outputs) {
+    var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    var n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    var sum = n1 * n2;
+
+    this.editor?.nodes?.find((n) => n.id == node.id)?.controls.get("preview")?.setValue(sum);
+    outputs["num"] = sum;
+  }
+}
+
+class DivComponent extends Rete.Component {
+  constructor() {
+    super("Div");
+
+    this.data.component = MyNode; // optional
+  }
+
+  async builder(node:Node) {
+    var inp1 = new Rete.Input("num1", "Number", numSocket);
+    var inp2 = new Rete.Input("num2", "Number2", numSocket);
+    var out = new Rete.Output("num", "Number", numSocket);
+
+    inp1.addControl(new NumControl(this.editor, "num1", node));
+    inp2.addControl(new NumControl(this.editor, "num2", node));
+
+    node
+      .addInput(inp1)
+      .addInput(inp2)
+      .addControl(new NumControl(this.editor, "preview", node, true))
+      .addOutput(out);
+  }
+
+  worker(node, inputs, outputs) {
+    var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    var n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    var sum = n1 / n2;
+
+    this.editor?.nodes?.find((n) => n.id == node.id)?.controls.get("preview")?.setValue(sum);
+    outputs["num"] = sum;
+  }
+}
+
+class CalComponent extends Rete.Component {
+  constructor() {
+    super("Cal");
+
+    this.data.component = MyNode; // optional
+  }
+
+  async builder(node:Node) {
+    var inp1 = new Rete.Input("num1", "Number", numSocket);
+    var inp2 = new Rete.Input("num2", "Number2", numSocket);
+    var inp3 = new Rete.Input("ope", "Number3", numSocket);
+    var out = new Rete.Output("num", "Number", numSocket);
+    inp1.addControl(new NumControl(this.editor, "num1", node));
+    inp2.addControl(new NumControl(this.editor, "num2", node));
+    inp3.addControl(new NumControl(this.editor, "num3", node));
+
+    node
+      .addInput(inp1)
+      .addInput(inp2)
+      .addInput(inp3)
+      .addControl(new NumControl(this.editor, "preview", node, true))
+      .addOutput(out);
+  }
+
+  worker(node, inputs, outputs) {
+    var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    var n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    var sum = n1 / n2;
+
+    this.editor?.nodes?.find((n) => n.id == node.id)?.controls.get("preview")?.setValue(sum);
+    outputs["num"] = sum;
+  }
+}
+class VarComponent extends Rete.Component {
+  constructor() {
+    super("Variable");
+  }
+
+  async builder(node:Node) {
+    var out1 = new Rete.Output("num", "Number", numSocket);
+    var ctrl = new NumControl(this.editor, "num", node);
+
+    node.addControl(ctrl).addOutput(out1);
+  }
+
+  worker(node:NodeData, inputs:WorkerInputs, outputs:WorkerOutputs) {
+    outputs["num"] = node.data.num;
+  }
+}
+
 export async function selectComponents(container: HTMLElement) {
   var components = [new NumComponent(), new AddComponent()];
   var editor = new Rete.NodeEditor("demo@0.1.0", container);
@@ -108,7 +254,7 @@ export async function selectComponents(container: HTMLElement) {
 }
 
 export async function createEditor(container: HTMLElement) {
-  var components = [new NumComponent(), new AddComponent()];
+  var components = [new NumComponent(), new AddComponent(), new SubComponent(), new MulComponent(), new DivComponent(), new VarComponent(), new CalComponent()];
 
   var editor = new Rete.NodeEditor("demo@0.1.0", container);
   editor.use(ConnectionPlugin);

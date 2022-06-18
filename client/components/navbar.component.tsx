@@ -13,6 +13,9 @@ const NavigationBar = () => {
           <Nav.Link onClick={processLogout} href={"/"}>
             Logout
           </Nav.Link>
+          <Nav.Link href={"/editpage"}>
+            EditPage 
+          </Nav.Link>
         </Nav>
       )
     } else {
