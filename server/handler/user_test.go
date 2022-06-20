@@ -40,6 +40,15 @@ func TestSignUpUser(t *testing.T) {
 		assert.Equal(t, user.Name, name)
 		assert.Equal(t, user.Email, email)
 	}
+	// アドレスが未登録
+	json = fmt.Sprintf(`{"name":"%s","email":"%s","password":"%s"}`, name, email, password)
+	req = httptest.NewRequest(http.MethodPost, "/signup", strings.NewReader(json))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec = httptest.NewRecorder()
+	c = e.NewContext(req, rec)
+	// 登録済みのアドレス
+	assert.EqualError(t, h.SignUpUser(c), echo.NewHTTPError(
+		http.StatusConflict, "email already exits").Error())
 }
 
 func TestLoginUser(t *testing.T) {
@@ -74,7 +83,7 @@ func TestLoginUser(t *testing.T) {
 	rec = httptest.NewRecorder()
 	c = e.NewContext(req, rec)
 	// 認証エラー
-	assert.Equal(t, echo.ErrUnauthorized, h.LoginUser(c))
+	assert.EqualError(t, h.LoginUser(c), echo.ErrUnauthorized.Error())
 
 	// パスワードが異なる
 	json = fmt.Sprintf(`{"email":"%s","password":"%s"}`, email, "abcdef")
@@ -83,7 +92,7 @@ func TestLoginUser(t *testing.T) {
 	rec = httptest.NewRecorder()
 	c = e.NewContext(req, rec)
 	// 認証エラー
-	assert.Equal(t, echo.ErrUnauthorized, h.LoginUser(c))
+	assert.EqualError(t, h.LoginUser(c), echo.ErrUnauthorized.Error())
 }
 
 func TestGetUserInfo(t *testing.T) {

@@ -77,7 +77,9 @@ func (h *Handler) SignUpUser(c echo.Context) error {
 
 	if result.RowsAffected > 0 {
 		// emailが登録済み
-		return c.NoContent(http.StatusConflict)
+		return echo.NewHTTPError(
+			http.StatusConflict,
+			"email already exits")
 	}
 
 	user := models.User{Name: param.Name, Email: param.Email}
