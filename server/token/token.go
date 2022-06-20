@@ -16,7 +16,7 @@ type jwtCustomClaims struct {
 	jwt.StandardClaims
 }
 
-func CreateToken(user *models.User) (string, error) {
+func CreateToken(user models.User) (string, error) {
 	claims := &jwtCustomClaims{
 		user.ID,
 		user.Name,

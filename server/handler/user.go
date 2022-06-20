@@ -25,7 +25,7 @@ type signupRequest struct {
 func (h *Handler) LoginUser(c echo.Context) error {
 	param := new(loginRequest)
 	if err := c.Bind(param); err != nil {
-		return err
+		return echo.ErrBadRequest
 	}
 
 	// 登録済みユーザの検索
@@ -49,7 +49,7 @@ func (h *Handler) LoginUser(c echo.Context) error {
 	}
 
 	// トークン生成
-	token, err := token.CreateToken(user)
+	token, err := token.CreateToken(*user)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (h *Handler) LoginUser(c echo.Context) error {
 func (h *Handler) SignUpUser(c echo.Context) error {
 	param := new(signupRequest)
 	if err := c.Bind(param); err != nil {
-		return err
+		return echo.ErrBadRequest
 	}
 
 	result := h.DB.Users.
