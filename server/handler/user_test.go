@@ -32,7 +32,7 @@ func TestSignUpUser(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	if assert.NoError(t, h.SignUpUser(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, http.StatusCreated, rec.Code)
 
 		// ユーザの追加を確認
 		user := new(models.User)
@@ -83,7 +83,8 @@ func TestLoginUser(t *testing.T) {
 	rec = httptest.NewRecorder()
 	c = e.NewContext(req, rec)
 	// 認証エラー
-	assert.EqualError(t, h.LoginUser(c), echo.ErrUnauthorized.Error())
+	assert.EqualError(t, h.LoginUser(c), echo.NewHTTPError(
+		http.StatusUnauthorized, "invalid email").Error())
 
 	// パスワードが異なる
 	json = fmt.Sprintf(`{"email":"%s","password":"%s"}`, email, "abcdef")
@@ -92,7 +93,8 @@ func TestLoginUser(t *testing.T) {
 	rec = httptest.NewRecorder()
 	c = e.NewContext(req, rec)
 	// 認証エラー
-	assert.EqualError(t, h.LoginUser(c), echo.ErrUnauthorized.Error())
+	assert.EqualError(t, h.LoginUser(c), echo.NewHTTPError(
+		http.StatusUnauthorized, "invalid password").Error())
 }
 
 func TestGetUserInfo(t *testing.T) {
