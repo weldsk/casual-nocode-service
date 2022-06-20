@@ -1,4 +1,4 @@
-name: Go
+name: Backend
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Go
+    - name: Set up Backend
       uses: actions/setup-go@v3
       with:
         go-version: 1.17
