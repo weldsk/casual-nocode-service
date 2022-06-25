@@ -58,7 +58,7 @@ func (d *Database) Close() {
 	var err error
 	db, err = d.Users.DB()
 
-	if err != nil {
+	if err == nil {
 		db.Close()
 	}
 }
