@@ -100,7 +100,7 @@ const Login: React.VFC = () => {
                 Login
               </Button>
               <p className="forgot-password right">
-                Forgot <a href="#">password?</a>
+                Forgot <a href="/#">password?</a>
               </p>
             </div>
           </div>
