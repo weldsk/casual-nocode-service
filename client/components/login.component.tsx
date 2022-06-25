@@ -35,6 +35,9 @@ const Login: React.VFC = () => {
         localStorage.setItem("user", JSON.stringify(response.data))
         navigate("/");
       }
+      else {
+        console.error("token error");
+      }
     }).catch((error: AxiosError) => {
       setFormAlertFlag(true);
     })
