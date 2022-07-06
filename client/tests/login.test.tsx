@@ -7,18 +7,22 @@ import axios from "axios";
 
 jest.mock("axios");
 const postApiMock = jest.spyOn(axios, "post").mockName("axios-post");
-const consoleMock = jest.spyOn(console, "error").mockImplementation();
+const alerteMock = jest.spyOn(window, "alert").mockImplementation();
 const setItemMock = jest.spyOn(Storage.prototype, "setItem");
+const mockNavigator = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigator,
+}));
+
 
 beforeEach(() => {
-  postApiMock.mockReset();
-  consoleMock.mockReset();
-  setItemMock.mockReset();
+  jest.clearAllMocks();
   localStorage.clear();
 });
 afterEach(cleanup);
 
-describe("SignUp Test", () => {
+describe("Login Test", () => {
   it("非ログイン状態のテスト", () => {
     expect(JSON.parse(localStorage.getItem("user") as string)).toBeNull();
   });
@@ -28,33 +32,44 @@ describe("SignUp Test", () => {
     expect(getByPlaceholderText("Enter password")).toHaveValue("");
   });
   it("ログイン失敗パターンのテスト", async () => {
-    postApiMock.mockRejectedValue("");
+    postApiMock.mockRejectedValue({ response: { status: 401 } });
     const { getByPlaceholderText, getByRole } = render(<Router><Login /></Router>);
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.click(getByRole("button", { name: "Login" }));
     await waitFor(() =>
-      expect(getByRole("alert")).toBeTruthy(),
+      expect(getByRole("alert")).toBeVisible(),
+    );
+  });
+  it("ログイン失敗パターンのテスト(予期せぬエラー)", async () => {
+    postApiMock.mockRejectedValue({});
+    const { getByPlaceholderText, getByRole } = render(<Router><Login /></Router>);
+    userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
+    userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
+    userEvent.click(getByRole("button", { name: "Login" }));
+    await waitFor(() =>
+      expect(alerteMock).toBeCalled(),
     );
   });
   it("ログイン失敗パターンのテスト(token取得失敗)", async () => {
-    postApiMock.mockResolvedValue({ data: {}});
+    postApiMock.mockResolvedValue({ data: {} });
     const { getByPlaceholderText, getByRole } = render(<Router><Login /></Router>);
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.click(getByRole("button", { name: "Login" }));
     await waitFor(() =>
-      expect(consoleMock).toBeCalled(),
+      expect(alerteMock).toBeCalled(),
     );
   });
   it("ログイン成功パターンのテスト", async () => {
-    postApiMock.mockResolvedValue({ data: { token: "dummyToken" }, sttus: 200, statusText: "OK" });
+    postApiMock.mockResolvedValue({ data: { token: "dummyToken" }, status: 200, statusText: "OK" });
     const { getByPlaceholderText, getByRole } = render(<Router><Login /></Router>);
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.click(getByRole("button", { name: "Login" }));
-    await waitFor(() =>
-      expect(setItemMock).toHaveBeenCalledWith("user", JSON.stringify({token:"dummyToken"})),
-    );
+    await waitFor(() => {
+      expect(setItemMock).toHaveBeenCalledWith("user", JSON.stringify({ token: "dummyToken" }));
+      expect(mockNavigator).toHaveBeenCalledWith("/");
+    });
   });
 });

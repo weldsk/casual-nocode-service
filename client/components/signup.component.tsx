@@ -48,14 +48,19 @@ const SignUp: React.VFC = () => {
     }
     axios.post(process.env.REACT_APP_API_URL + "/signup", postData
     ).then((response: AxiosResponse) => {
-      navigate("/login");
-      /*TODO*/
+      if(response) {
+        navigate("/login");
+        /*TODO*/
+      }
+      else{
+        alert("An unexpected error has occurred.");
+      }
     }).catch((error: AxiosError) => {
       if (error.response && error.response.status === 409) {
-        actions.setErrors({ email: "Email is invalid or already registered" })
+        actions.setErrors({ email: "Email is invalid or already registered" });
       }
       else {
-        /*TODO*/
+        alert("An unexpected error has occurred.");
       }
     })
   };

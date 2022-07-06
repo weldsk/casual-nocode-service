@@ -36,10 +36,15 @@ const Login: React.VFC = () => {
         navigate("/");
       }
       else {
-        console.error("token error");
+        alert("An unexpected error has occurred.");
       }
     }).catch((error: AxiosError) => {
-      setFormAlertFlag(true);
+      if (error.response && error.response.status === 401) {
+        setFormAlertFlag(true);
+      }
+      else {
+        alert("An unexpected error has occurred.");
+      }
     })
   }
   return (
