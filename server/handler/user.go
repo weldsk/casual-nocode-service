@@ -40,12 +40,16 @@ func (h *Handler) LoginUser(c echo.Context) error {
 
 	// アカウントが無い
 	if result.RowsAffected <= 0 {
-		return echo.ErrUnauthorized
+		return echo.NewHTTPError(
+			http.StatusUnauthorized,
+			"invalid email")
 	}
 
 	// パスワードが異なる
 	if !user.Login(param.Password) {
-		return echo.ErrUnauthorized
+		return echo.NewHTTPError(
+			http.StatusUnauthorized,
+			"invalid password")
 	}
 
 	// トークン生成
@@ -92,7 +96,15 @@ func (h *Handler) SignUpUser(c echo.Context) error {
 		return result.Error
 	}
 
-	return c.NoContent(http.StatusOK)
+	// トークン生成
+	token, err := token.CreateToken(user)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusCreated, echo.Map{
+		"token": token,
+	})
 }
 
 // ユーザー情報取得
