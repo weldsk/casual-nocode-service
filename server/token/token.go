@@ -16,7 +16,7 @@ type jwtCustomClaims struct {
 	jwt.StandardClaims
 }
 
-func CreateToken(user *models.User) (string, error) {
+func CreateToken(user models.User) (string, error) {
 	claims := &jwtCustomClaims{
 		user.ID,
 		user.Name,
@@ -43,6 +43,7 @@ func getKey() string {
 	}
 
 	return key
+}
 
 func GetName(c echo.Context) string {
 	user := c.Get("user").(*jwt.Token)
