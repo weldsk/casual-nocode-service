@@ -4,10 +4,8 @@ import { BrowserRouter, Router } from 'react-router-dom';
 import App from '../App';
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
-import TestRenderer from "react-test-renderer";
 import { createMemoryHistory } from "history";
 
-const { act, create } = TestRenderer;
 jest.mock("axios");
 const getApiMock = jest.spyOn(axios, "get").mockName("axios-get");
 const setItemMock = jest.spyOn(Storage.prototype, "setItem");
