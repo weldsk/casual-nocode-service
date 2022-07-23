@@ -1,4 +1,5 @@
 import { Container, Nav, Navbar } from "react-bootstrap"
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../services/use-auth"
 
 const NavigationBar = () => {
@@ -7,24 +8,24 @@ const NavigationBar = () => {
     if (isAuthenticated) {
       return (
         <Nav>
-          <Nav.Link href={"/mypage"}>
+          <Nav.Link data-testid="mypage-nav" as={NavLink} to={"/mypage"}>
             MyPage
           </Nav.Link>
-          <Nav.Link onClick={processLogout} href={"/"}>
+          <Nav.Link data-testid="logout-nav" onClick={processLogout} as={NavLink} to={"/"}>
             Logout
           </Nav.Link>
         </Nav>
       )
     } else {
       return (
-        <>
-          <Nav.Link href={"/login"}>
+        <Nav>
+          <Nav.Link data-testid="login-nav" as={NavLink} to={"/login"}>
             Login
           </Nav.Link>
-          <Nav.Link href={"/signup"}>
+          <Nav.Link data-testid="signup-nav" as={NavLink} to={"/signup"}>
             Sign up
           </Nav.Link>
-        </>
+        </Nav>
       )
     }
   }

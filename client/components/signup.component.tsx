@@ -48,9 +48,9 @@ const SignUp: React.VFC = () => {
     }
     axios.post(process.env.REACT_APP_API_URL + "/signup", postData
     ).then((response: AxiosResponse) => {
-      if(response) {
-        navigate("/login");
-        /*TODO*/
+      if(response.data.token) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+        navigate("/");
       }
       else{
         alert("An unexpected error has occurred.");

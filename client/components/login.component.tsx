@@ -32,7 +32,7 @@ const Login: React.VFC = () => {
     axios.post(process.env.REACT_APP_API_URL + "/login", postData
     ).then((response: AxiosResponse) => {
       if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data))
+        localStorage.setItem("user", JSON.stringify(response.data));
         navigate("/");
       }
       else {
