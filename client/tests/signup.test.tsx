@@ -57,8 +57,8 @@ describe("SignUp Test", () => {
       expect(alerteMock).toBeCalled(),
     );
   });
-  it("登録失敗パターンのテスト(レスポンスなし)", async () => {
-    postApiMock.mockResolvedValue(null);
+  it("登録失敗パターンのテスト(token取得失敗)", async () => {
+    postApiMock.mockResolvedValue({ data: {} });
     const { getByPlaceholderText, getByRole } = render(<Router><SignUp /></Router>);
     userEvent.type(getByPlaceholderText("User name"), "test");
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
@@ -70,15 +70,16 @@ describe("SignUp Test", () => {
     );
   });
   it("登録成功パターンのテスト", async () => {
-    postApiMock.mockResolvedValue({ status: 200, statusText: "OK" });
+    postApiMock.mockResolvedValue({ data: { token: "dummyToken" }, status: 200, statusText: "OK" });
     const { getByPlaceholderText, getByRole } = render(<Router><SignUp /></Router>);
     userEvent.type(getByPlaceholderText("User name"), "test");
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.type(getByPlaceholderText("Confirm password"), "12345678Aa");
     userEvent.click(getByRole("button", { name: "Sign Up" }));
-    await waitFor(() =>
-      expect(mockNavigator).toHaveBeenCalledWith("/login"),
-    );
+    await waitFor(() => {
+      expect(setItemMock).toHaveBeenCalledWith("user", JSON.stringify({ token: "dummyToken" }));
+      expect(mockNavigator).toHaveBeenCalledWith("/");
+    });
   });
 });
