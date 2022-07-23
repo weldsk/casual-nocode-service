@@ -141,7 +141,7 @@ const SignUp: React.VFC = () => {
                 />
                 <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
               </Form.Group>
-              <Button type="submit">
+              <Button data-testid="signup-btn" type="submit">
                 Sign Up
               </Button>
               <p className="forgot-password text-right">

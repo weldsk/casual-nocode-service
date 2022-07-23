@@ -101,7 +101,7 @@ const Login: React.VFC = () => {
                   label="Remember me"
                 />
               </Form.Group>
-              <Button type="submit">
+              <Button data-testid="login-btn" type="submit">
                 Login
               </Button>
               <p className="forgot-password right">
