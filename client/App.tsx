@@ -21,17 +21,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route element={<RedirectRoute
-            logined={true}
-            redirectPath={"/login"}
-          />}>
+          <Route
+            element={<RedirectRoute logined={true} redirectPath={"/login"} />}
+          >
             <Route path="/mypage" element={<MyPage />} />
           </Route>
 
-          <Route element={<RedirectRoute
-            logined={false}
-            redirectPath={"/"}
-          />}>
+          <Route element={<RedirectRoute logined={false} redirectPath={"/"} />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>

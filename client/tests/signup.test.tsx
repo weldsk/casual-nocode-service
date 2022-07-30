@@ -1,18 +1,17 @@
 import { render, cleanup, waitFor, getByTestId } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from "react-router-dom";
 import SignUp from "../components/signup.component";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
-
 
 jest.mock("axios");
 const postApiMock = jest.spyOn(axios, "post").mockName("axios-post");
 const alerteMock = jest.spyOn(window, "alert").mockImplementation();
 const setItemMock = jest.spyOn(Storage.prototype, "setItem");
 const mockNavigator = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigator,
 }));
 
@@ -27,7 +26,11 @@ describe("SignUp Test", () => {
     expect(JSON.parse(localStorage.getItem("user") as string)).toBeNull();
   });
   it("初期状態が正しいか", () => {
-    const { getByPlaceholderText } = render(<Router><SignUp /></Router>);
+    const { getByPlaceholderText } = render(
+      <Router>
+        <SignUp />
+      </Router>
+    );
     expect(getByPlaceholderText("User name")).toHaveValue("");
     expect(getByPlaceholderText("Enter email")).toHaveValue("");
     expect(getByPlaceholderText("Enter password")).toHaveValue("");
@@ -35,50 +38,69 @@ describe("SignUp Test", () => {
   });
   it("登録失敗失敗パターンのテスト(Email重複)", async () => {
     postApiMock.mockRejectedValue({ response: { status: 409 } });
-    const { getByPlaceholderText, getByTestId, getByText } = render(<Router><SignUp /></Router>);
+    const { getByPlaceholderText, getByTestId, getByText } = render(
+      <Router>
+        <SignUp />
+      </Router>
+    );
     userEvent.type(getByPlaceholderText("User name"), "test");
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.type(getByPlaceholderText("Confirm password"), "12345678Aa");
     userEvent.click(getByTestId("signup-btn"));
     await waitFor(() =>
-      expect(getByText("Email is invalid or already registered")).toBeVisible(),
+      expect(getByText("Email is invalid or already registered")).toBeVisible()
     );
   });
   it("登録失敗パターンのテスト(予期せぬエラー)", async () => {
     postApiMock.mockRejectedValue({});
-    const { getByPlaceholderText, getByTestId } = render(<Router><SignUp /></Router>);
+    const { getByPlaceholderText, getByTestId } = render(
+      <Router>
+        <SignUp />
+      </Router>
+    );
     userEvent.type(getByPlaceholderText("User name"), "test");
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.type(getByPlaceholderText("Confirm password"), "12345678Aa");
     userEvent.click(getByTestId("signup-btn"));
-    await waitFor(() =>
-      expect(alerteMock).toBeCalled(),
-    );
+    await waitFor(() => expect(alerteMock).toBeCalled());
   });
   it("登録失敗パターンのテスト(token取得失敗)", async () => {
     postApiMock.mockResolvedValue({ data: {} });
-    const { getByPlaceholderText, getByTestId } = render(<Router><SignUp /></Router>);
+    const { getByPlaceholderText, getByTestId } = render(
+      <Router>
+        <SignUp />
+      </Router>
+    );
     userEvent.type(getByPlaceholderText("User name"), "test");
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.type(getByPlaceholderText("Confirm password"), "12345678Aa");
     userEvent.click(getByTestId("signup-btn"));
-    await waitFor(() =>
-      expect(alerteMock).toBeCalled(),
-    );
+    await waitFor(() => expect(alerteMock).toBeCalled());
   });
   it("登録成功パターンのテスト", async () => {
-    postApiMock.mockResolvedValue({ data: { token: "dummyToken" }, status: 200, statusText: "OK" });
-    const { getByPlaceholderText, getByTestId } = render(<Router><SignUp /></Router>);
+    postApiMock.mockResolvedValue({
+      data: { token: "dummyToken" },
+      status: 200,
+      statusText: "OK",
+    });
+    const { getByPlaceholderText, getByTestId } = render(
+      <Router>
+        <SignUp />
+      </Router>
+    );
     userEvent.type(getByPlaceholderText("User name"), "test");
     userEvent.type(getByPlaceholderText("Enter email"), "test@test.com");
     userEvent.type(getByPlaceholderText("Enter password"), "12345678Aa");
     userEvent.type(getByPlaceholderText("Confirm password"), "12345678Aa");
     userEvent.click(getByTestId("signup-btn"));
     await waitFor(() => {
-      expect(setItemMock).toHaveBeenCalledWith("user", JSON.stringify({ token: "dummyToken" }));
+      expect(setItemMock).toHaveBeenCalledWith(
+        "user",
+        JSON.stringify({ token: "dummyToken" })
+      );
       expect(mockNavigator).toHaveBeenCalledWith("/");
     });
   });

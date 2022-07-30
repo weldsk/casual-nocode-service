@@ -6,30 +6,36 @@ import { Formik, FormikHelpers } from "formik";
 import { useNavigate } from "react-router-dom";
 
 interface SignUpFormValues {
-  username: string,
-  email: string,
-  password: string,
-  confirmPassword: string,
-};
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const errorSchema = yup.object().shape({
-  username: yup.string()
+  username: yup
+    .string()
     .required("Enter a username")
     .max(30, "Your username must be less than 30 characters")
-    .matches(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,30}$/,
-      "Contains characters that cannot be used. Only alphanumeric characters and '-' are allowed. The '-' cannot be used consecutively, at the beginning, or at the end."),
-  email: yup.string()
+    .matches(
+      /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,30}$/,
+      "Contains characters that cannot be used. Only alphanumeric characters and '-' are allowed. The '-' cannot be used consecutively, at the beginning, or at the end."
+    ),
+  email: yup
+    .string()
     .required("Enter a email")
     .email("Email is invalid or already registered"),
-  password: yup.string()
+  password: yup
+    .string()
     .required("Enter a password")
     .matches(
       /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?!.*?\\)[\x21-\x7e]{8,50}$/,
       "Your password must be between 8 and 50 characters. Must contain one uppercase, one lowercase and one number."
     ),
-  confirmPassword: yup.string()
+  confirmPassword: yup
+    .string()
     .required("Confirm your password")
-    .oneOf([yup.ref('password'), null], "Passwords do not match"),
+    .oneOf([yup.ref("password"), null], "Passwords do not match"),
 });
 
 const SignUp: React.VFC = () => {
@@ -39,30 +45,36 @@ const SignUp: React.VFC = () => {
     email: "",
     password: "",
     confirmPassword: "",
-  }
-  const onSubmit = (values: SignUpFormValues, actions: FormikHelpers<SignUpFormValues>) => {//Post Request
+  };
+  const onSubmit = (
+    values: SignUpFormValues,
+    actions: FormikHelpers<SignUpFormValues>
+  ) => {
+    //Post Request
     const postData = {
       name: values.username,
       email: values.email,
-      password: values.password
-    }
-    axios.post(process.env.REACT_APP_API_URL + "/signup", postData
-    ).then((response: AxiosResponse) => {
-      if(response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-        navigate("/");
-      }
-      else{
-        alert("An unexpected error has occurred.");
-      }
-    }).catch((error: AxiosError) => {
-      if (error.response && error.response.status === 409) {
-        actions.setErrors({ email: "Email is invalid or already registered" });
-      }
-      else {
-        alert("An unexpected error has occurred.");
-      }
-    })
+      password: values.password,
+    };
+    axios
+      .post(process.env.REACT_APP_API_URL + "/signup", postData)
+      .then((response: AxiosResponse) => {
+        if (response.data.token) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          navigate("/");
+        } else {
+          alert("An unexpected error has occurred.");
+        }
+      })
+      .catch((error: AxiosError) => {
+        if (error.response && error.response.status === 409) {
+          actions.setErrors({
+            email: "Email is invalid or already registered",
+          });
+        } else {
+          alert("An unexpected error has occurred.");
+        }
+      });
   };
 
   return (
@@ -71,12 +83,7 @@ const SignUp: React.VFC = () => {
       onSubmit={onSubmit}
       initialValues={initialValues}
     >
-      {({
-        handleSubmit,
-        handleChange,
-        values,
-        errors,
-      }) => (
+      {({ handleSubmit, handleChange, values, errors }) => (
         <Form noValidate onSubmit={handleSubmit}>
           <div className="auth-wrapper">
             <div className="auth-inner">
@@ -94,7 +101,9 @@ const SignUp: React.VFC = () => {
                   onChange={handleChange}
                   isInvalid={!!errors.username}
                 />
-                <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -109,7 +118,9 @@ const SignUp: React.VFC = () => {
                   onChange={handleChange}
                   isInvalid={!!errors.email}
                 />
-                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -124,7 +135,9 @@ const SignUp: React.VFC = () => {
                   onChange={handleChange}
                   isInvalid={!!errors.password}
                 />
-                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -139,7 +152,9 @@ const SignUp: React.VFC = () => {
                   onChange={handleChange}
                   isInvalid={!!errors.confirmPassword}
                 />
-                <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword}
+                </Form.Control.Feedback>
               </Form.Group>
               <Button data-testid="signup-btn" type="submit">
                 Sign Up
