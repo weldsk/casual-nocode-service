@@ -1,29 +1,32 @@
-import React from "react";
 import { useRete } from "../services/edit-service/custom-rete";
 import '../App.css';
 import AreaPlugin from "rete-area-plugin";
 
 function EditorPage() {
-  const [container, setContainer] = useRete();
+  const props = useRete();
+  const container = props.container;
+  const setContainer = props.setContainer;
   const handleClickSaveButton = () => {
-    localStorage.setItem('GRAPH_EDITOR_VIEW', JSON.stringify(container.current.toJSON()));
+    if (container) {
+      localStorage.setItem('GRAPH_EDITOR_VIEW', JSON.stringify(container.toJSON()));
+    }
   }
   const handleClickLoadButton = async () => {
     const data = localStorage.getItem('GRAPH_EDITOR_VIEW');
-    if (data) {
+    if (data && container) {
       const parse_data = JSON.parse(data);
-      await container.current.fromJSON(parse_data);
-      AreaPlugin.zoomAt(container.current, container.current.nodes);
+      await container.fromJSON(parse_data);
+      AreaPlugin.zoomAt(container, container.nodes);
     }
   }
   return (
     <div className="Editor-wrapper">
-        <div className="editor">
-          <div className="container">
-            <div className="node-editor"></div>
-          </div>
-          <div className="dock"></div>
+      <div className="editor">
+        <div className="container">
+          <div className="node-editor"></div>
         </div>
+        <div className="dock"></div>
+      </div>
       <div className="Editor-save-load">
         <button onClick={handleClickSaveButton}>
           save
