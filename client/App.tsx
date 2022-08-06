@@ -1,4 +1,4 @@
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -22,18 +22,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route element={<RedirectRoute
-            logined={true}
-            redirectPath={"/login"}
-          />}>
+          <Route
+            element={<RedirectRoute logined={true} redirectPath={"/login"} />}
+          >
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/editpage" element={<EditorPage />} />
           </Route>
 
-          <Route element={<RedirectRoute
-            logined={false}
-            redirectPath={"/"}
-          />}>
+          <Route element={<RedirectRoute logined={false} redirectPath={"/"} />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>

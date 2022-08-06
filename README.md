@@ -1,5 +1,8 @@
 # CNCS
 
+[![Backend](https://github.com/weldsk/casual-nocode-service/actions/workflows/backend.yml/badge.svg)](https://github.com/weldsk/casual-nocode-service/actions/workflows/backend.yml)
+[![Frontend](https://github.com/weldsk/casual-nocode-service/actions/workflows/Frontend.yml/badge.svg)](https://github.com/weldsk/casual-nocode-service/actions/workflows/Frontend.yml)
+
 ## Environment Variables
 
 Set the following environment variables.

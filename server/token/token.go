@@ -2,6 +2,7 @@ package token
 
 import (
 	"casual-nocode-service/models"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -15,7 +16,7 @@ type jwtCustomClaims struct {
 	jwt.StandardClaims
 }
 
-func CreateToken(user *models.User) (string, error) {
+func CreateToken(user models.User) (string, error) {
 	claims := &jwtCustomClaims{
 		user.ID,
 		user.Name,
@@ -25,14 +26,23 @@ func CreateToken(user *models.User) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte("secret_key"))
+	return token.SignedString([]byte(getKey()))
 }
 
 func GetJwtConfig() middleware.JWTConfig {
 	return middleware.JWTConfig{
 		Claims:     &jwtCustomClaims{},
-		SigningKey: []byte("secret_key"),
+		SigningKey: []byte(getKey()),
 	}
+}
+
+func getKey() string {
+	key := os.Getenv("SECRET_KEY")
+	if key == "" {
+		panic("failed get key")
+	}
+
+	return key
 }
 
 func GetName(c echo.Context) string {
@@ -45,4 +55,5 @@ func GetId(c echo.Context) uint {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*jwtCustomClaims)
 	return claims.ID
+
 }
