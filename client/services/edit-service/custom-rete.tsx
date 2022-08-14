@@ -146,6 +146,7 @@ class NumComponent extends Rete.Component {
   }
 }
 
+/* Disable TimeComponent
 class TimeComponent extends Rete.Component {
   constructor() {
     super("Time");
@@ -180,6 +181,7 @@ class TimeComponent extends Rete.Component {
     }
   }
 }
+*/
 
 class StrComponent extends Rete.Component {
   constructor() {
@@ -399,6 +401,9 @@ export async function createEditor(container: HTMLElement) {
     container: document.querySelector(".dock"),
     plugins: [ReactRenderPlugin],
     itemClass: "item",
+  } as any);
+  editor.use(AreaPlugin, {
+    scaleExtent: { min: 1, max: 1 },
   } as any);
 
   let engine = new Rete.Engine("demo@0.1.0");
