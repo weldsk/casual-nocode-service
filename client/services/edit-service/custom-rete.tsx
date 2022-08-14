@@ -338,7 +338,11 @@ class CalComponent extends Rete.Component {
     let n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
     let n3 = inputs["num3"].length ? inputs["num3"][0] : node.data.num3;
     let result = 0;
-    if (typeof n1 === "number" && typeof n2 === "number" && typeof n3 === "string") {
+    if (
+      typeof n1 === "number" &&
+      typeof n2 === "number" &&
+      typeof n3 === "string"
+    ) {
       if (n3 === "+") {
         result = n1 + n2;
       } else if (n3 === "-") {
@@ -353,8 +357,8 @@ class CalComponent extends Rete.Component {
         result = n1;
       }
       const outputControl = this.editor?.nodes
-      ?.find((n) => n.id === node.id)
-      ?.controls.get("preview");
+        ?.find((n) => n.id === node.id)
+        ?.controls.get("preview");
       if (outputControl instanceof NumControl) {
         outputControl.setValue(result);
         outputs["num"] = result;
@@ -371,7 +375,6 @@ export async function createEditor(container: HTMLElement) {
     new CalComponent(),
     new StrComponent(),
     new IfComponent(),
-    new TimeComponent(),
   ];
 
   let editor = new Rete.NodeEditor("demo@0.1.0", container);
@@ -379,8 +382,7 @@ export async function createEditor(container: HTMLElement) {
   editor.use(ReactRenderPlugin);
 
   editor.use(ContextMenuPlugin, {
-    searchBar: false, // true by default
-    //searchKeep: title => true, // leave item when searching, optional. For example, title => ['Refresh'].includes(title)
+    searchBar: false,
     delay: 100,
     allocate() {
       return null;
@@ -389,8 +391,8 @@ export async function createEditor(container: HTMLElement) {
       return component.name;
     },
     nodeItems: {
-      Delete: true, // don't show Delete item
-      Clone: true, // or Clone item
+      Delete: true,
+      Clone: true,
     },
   } as any);
   editor.use(DockPlugin, {
@@ -405,22 +407,6 @@ export async function createEditor(container: HTMLElement) {
     editor.register(c);
     engine.register(c);
   });
-  /*
-  let n1 = await components[0].createNode({ num: 2 });
-  let n2 = await components[0].createNode({ num: 3 });
-  let add = await components[1].createNode();
-
-  n1.position = [80, 200];
-  n2.position = [80, 400];
-  add.position = [500, 240];
-
-  editor.addNode(n1);
-  editor.addNode(n2);
-  editor.addNode(add);
-
-  editor.connect(n1.outputs.get("num"), add.inputs.get("num1"));
-  editor.connect(n2.outputs.get("num"), add.inputs.get("num2"));
-  */
   editor.on(
     [
       "process",
