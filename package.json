@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.17.12",
+    "@babel/preset-react": "^7.17.12",
     "@svgr/plugin-svgo": "^6.2.0",
     "@svgr/webpack": "^6.2.1",
     "jest-environment-jsdom": "^28.1.1",
