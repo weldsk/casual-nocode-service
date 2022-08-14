@@ -19,8 +19,8 @@ const NavigationBar = () => {
           >
             Logout
           </Nav.Link>
-          <Nav.Link href={"/editpage"}>
-            EditPage 
+          <Nav.Link data-testid="mypage-nav" as={NavLink} to={"/editpage"}>
+            EditPage
           </Nav.Link>
         </Nav>
       );
