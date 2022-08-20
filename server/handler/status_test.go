@@ -14,7 +14,7 @@ func TestGetStatus(t *testing.T) {
 	e := echo.New()
 	db := database.CreateMemory()
 	defer db.Close()
-	h := Handler{db}
+	h := Handler{db, "storage"}
 
 	req := httptest.NewRequest(http.MethodGet, "/status", nil)
 	rec := httptest.NewRecorder()

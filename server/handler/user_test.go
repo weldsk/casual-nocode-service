@@ -3,7 +3,6 @@ package handler
 import (
 	"casual-nocode-service/database"
 	"casual-nocode-service/models"
-	"casual-nocode-service/token"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -11,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +17,7 @@ func TestSignUpUser(t *testing.T) {
 	e := echo.New()
 	db := database.CreateMemory()
 	defer db.Close()
-	h := Handler{db}
+	h := Handler{DB: db}
 
 	name := "test name"
 	email := "email@email.test"
@@ -55,7 +53,7 @@ func TestLoginUser(t *testing.T) {
 	e := echo.New()
 	db := database.CreateMemory()
 	defer db.Close()
-	h := Handler{db}
+	h := Handler{DB: db}
 
 	name := "test name"
 	email := "email@email.test"
@@ -95,34 +93,4 @@ func TestLoginUser(t *testing.T) {
 	// 認証エラー
 	assert.EqualError(t, h.LoginUser(c), echo.NewHTTPError(
 		http.StatusUnauthorized, "invalid password").Error())
-}
-
-func TestGetUserInfo(t *testing.T) {
-	e := echo.New()
-	db := database.CreateMemory()
-	defer db.Close()
-	h := Handler{db}
-
-	name := "test name"
-	email := "email@email.test"
-	password := "password"
-
-	// 認証情報作成
-	user := models.User{Name: name, Email: email}
-	user.SetPassword(password)
-	db.Users.Create(&user)
-	tokenStr, err := token.CreateToken(user)
-	assert.NoError(t, err)
-
-	// ユーザー情報取得
-	req := httptest.NewRequest(http.MethodGet, "/userinfo", nil)
-	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-
-	expectJson := fmt.Sprintf(`{"email":"%s","username":"%s"}`, email, name)
-	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.GetUserInfo)(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.JSONEq(t, expectJson, rec.Body.String())
-	}
 }
