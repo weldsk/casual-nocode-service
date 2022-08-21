@@ -1,23 +1,70 @@
 package handler
 
 import (
+	"bytes"
 	"casual-nocode-service/database"
 	"casual-nocode-service/models"
+	"casual-nocode-service/token"
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/stretchr/testify/assert"
 )
 
+// テスト用ハンドラ作成
+func createTestHandler() Handler {
+	db := database.CreateMemory()
+	h := Handler{db, "test_storage/"}
+	os.RemoveAll(h.StoragePath)
+	return h
+}
+
+// テスト用ハンドラクローズ
+func (h *Handler) closeTestHandler() {
+	h.DB.Close()
+	os.RemoveAll(h.StoragePath)
+}
+
+func createTestToken(h *Handler) string {
+	name := "test name"
+	email := "email@email.test"
+	password := "password"
+
+	// 認証情報作成
+	user := models.User{Name: name, Email: email}
+	user.SetPassword(password)
+	db := h.DB.Users.Create(&user)
+	if db.Error != nil {
+		os.Exit(1)
+	}
+	tokenStr, err := token.CreateToken(user)
+	if err != nil {
+		os.Exit(1)
+	}
+	return tokenStr
+}
+
+func TestMain(m *testing.M) {
+
+	os.RemoveAll("test_storage\\")
+
+	m.Run()
+
+}
 func TestSignUpUser(t *testing.T) {
 	e := echo.New()
-	db := database.CreateMemory()
-	defer db.Close()
-	h := Handler{DB: db}
+	h := createTestHandler()
+	defer h.closeTestHandler()
 
 	name := "test name"
 	email := "email@email.test"
@@ -34,7 +81,7 @@ func TestSignUpUser(t *testing.T) {
 
 		// ユーザの追加を確認
 		user := new(models.User)
-		db.Users.First(&user)
+		h.DB.Users.First(&user)
 		assert.Equal(t, user.Name, name)
 		assert.Equal(t, user.Email, email)
 	}
@@ -51,9 +98,8 @@ func TestSignUpUser(t *testing.T) {
 
 func TestLoginUser(t *testing.T) {
 	e := echo.New()
-	db := database.CreateMemory()
-	defer db.Close()
-	h := Handler{DB: db}
+	h := createTestHandler()
+	defer h.closeTestHandler()
 
 	name := "test name"
 	email := "email@email.test"
@@ -61,7 +107,7 @@ func TestLoginUser(t *testing.T) {
 
 	user := models.User{Name: name, Email: email}
 	user.SetPassword(password)
-	db.Users.Create(&user)
+	h.DB.Users.Create(&user)
 
 	// ログイン成功
 	json := fmt.Sprintf(`{"email":"%s","password":"%s"}`, email, password)
@@ -93,4 +139,108 @@ func TestLoginUser(t *testing.T) {
 	// 認証エラー
 	assert.EqualError(t, h.LoginUser(c), echo.NewHTTPError(
 		http.StatusUnauthorized, "invalid password").Error())
+}
+
+func TestGetUserInfo(t *testing.T) {
+	e := echo.New()
+	h := createTestHandler()
+	defer h.closeTestHandler()
+
+	name := "test name"
+	email := "email@email.test"
+	password := "password"
+
+	// 認証情報作成
+	user := models.User{Name: name, Email: email}
+	user.SetPassword(password)
+	h.DB.Users.Create(&user)
+	tokenStr, err := token.CreateToken(user)
+	assert.NoError(t, err)
+
+	// ユーザー情報取得
+	req := httptest.NewRequest(http.MethodGet, "/userinfo", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	expectJson := fmt.Sprintf(`{"email":"%s","username":"%s"}`, email, name)
+	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.GetUserInfo)(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.JSONEq(t, expectJson, rec.Body.String())
+	}
+}
+
+func createImage(width int, height int) image.Image {
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	c := uint8(0)
+	for x := 0; x < width; x++ {
+		for y := 0; y < height; y++ {
+			img.SetRGBA(x, y, color.RGBA{c, c, c, 255})
+			c++
+		}
+	}
+	return img
+}
+
+func createPngBuffer(img image.Image, fieldName string, fileName string) (string, *bytes.Buffer) {
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	file, err := writer.CreateFormFile(fieldName, fileName)
+	if err != nil {
+		os.Exit(1)
+	}
+	err = png.Encode(file, img)
+	if err != nil {
+		os.Exit(1)
+	}
+	writer.Close()
+	return writer.FormDataContentType(), body
+}
+
+func TestSetIcon(t *testing.T) {
+	e := echo.New()
+	h := createTestHandler()
+	defer h.closeTestHandler()
+
+	tokenStr := createTestToken(&h)
+
+	// 画像生成
+	img := createImage(256, 256)
+	contentType, body := createPngBuffer(img, "icon", "test.png")
+
+	// 成功
+	req := httptest.NewRequest(http.MethodPost, "/seticon", body)
+	req.Header.Set(echo.HeaderContentType, contentType)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.SetIcon)(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		uploadFile, err := os.Open(h.StoragePath + "icon/1.png")
+		if assert.NoError(t, err) {
+			uploadImg, err := png.Decode(uploadFile)
+			if assert.NoError(t, err) {
+				for x := 0; x < 256; x++ {
+					for y := 0; y < 256; y++ {
+						assert.Equal(t, img.At(x, y), uploadImg.At(x, y))
+					}
+				}
+			}
+		}
+	}
+
+	// 画像生成
+	img = createImage(257, 257)
+	contentType, body = createPngBuffer(img, "icon", "test.png")
+
+	// 画像サイズ超過
+	req = httptest.NewRequest(http.MethodPost, "/seticon", body)
+	req.Header.Set(echo.HeaderContentType, contentType)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec = httptest.NewRecorder()
+	c = e.NewContext(req, rec)
+
+	assert.EqualError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.SetIcon)(c),
+		echo.NewHTTPError(http.StatusBadRequest, "image size exceeds 256x256").Error())
 }

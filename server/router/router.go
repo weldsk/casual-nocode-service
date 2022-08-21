@@ -23,7 +23,7 @@ func Init(handler handler.Handler) *echo.Echo {
 	r.Use(middleware.JWTWithConfig(token.GetJwtConfig()))
 	r.GET("/status", handler.GetStatus)
 	r.GET("/userinfo", handler.GetUserInfo)
-	r.GET("/seticon", handler.SetIcon)
+	r.POST("/seticon", handler.SetIcon)
 	r.GET("/geticon", handler.GetIcon)
 
 	e.Logger.Fatal(e.Start(":1323"))

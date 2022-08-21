@@ -4,7 +4,6 @@ import (
 	"casual-nocode-service/models"
 	"casual-nocode-service/token"
 	"image/png"
-	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -173,16 +172,17 @@ func (h *Handler) SetIcon(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnsupportedMediaType, "not supported file")
 	}
 	if size.X > 256 || size.Y > 256 {
-		return echo.NewHTTPError(http.StatusUnsupportedMediaType, "image size exceeds 256x256")
+		return echo.NewHTTPError(http.StatusBadRequest, "image size exceeds 256x256")
 	}
 
-	dst, err := os.Create(h.StoragePath + "icon\\" + strconv.FormatUint(uint64(id), 10) + ".png")
+	os.MkdirAll(h.StoragePath+"icon/", os.ModePerm)
+	dst, err := os.Create(h.StoragePath + "icon/" + strconv.FormatUint(uint64(id), 10) + ".png")
 	if err != nil {
 		return err
 	}
 	defer dst.Close()
 
-	_, err = io.Copy(dst, src)
+	err = png.Encode(dst, image)
 	if err != nil {
 		return err
 	}
