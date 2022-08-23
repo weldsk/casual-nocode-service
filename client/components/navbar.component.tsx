@@ -11,6 +11,9 @@ const NavigationBar = () => {
           <Nav.Link data-testid="mypage-nav" as={NavLink} to={"/mypage"}>
             MyPage
           </Nav.Link>
+          <Nav.Link data-testid="editpage-nav" as={NavLink} to={"/editpage"}>
+            EditPage
+          </Nav.Link>
           <Nav.Link
             data-testid="logout-nav"
             onClick={processLogout}

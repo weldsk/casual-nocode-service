@@ -52,3 +52,47 @@
     transform: rotate(360deg);
   }
 }
+
+.Editor-wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  text-align: center;
+  min-height: 90vh;
+  min-width: 100vw;
+}
+
+.Editor-Playfield {
+  grid-column: 2;
+  grid-row: 2;
+  background-color: orange;
+}
+
+.Editor-save-load {
+  grid-column: 2;
+  grid-row: 1;
+  background-color: black;
+  height: 10vh;
+}
+
+.editor {
+  grid-column: 1;
+  grid-row: 1/3;
+  background-color: gray;
+}
+
+.dock {
+  transform: scale(0.8);
+}
+
+.dock-item {
+  display: inline-block;
+  vertical-align: top;
+  transform: scale(0.8);
+  transform-origin: 50% 0;
+}
+
+.container {
+  flex: 1;
+  overflow: hidden;
+}
