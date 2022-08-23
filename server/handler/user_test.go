@@ -9,6 +9,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -35,6 +36,7 @@ func (h *Handler) closeTestHandler() {
 	os.RemoveAll(h.StoragePath)
 }
 
+// テスト用認証
 func createTestToken(h *Handler) string {
 	name := "test name"
 	email := "email@email.test"
@@ -186,6 +188,7 @@ func createPngBuffer(img image.Image, fieldName string, fileName string) (string
 	body := new(bytes.Buffer)
 	writer := multipart.NewWriter(body)
 	file, err := writer.CreateFormFile(fieldName, fileName)
+	defer writer.Close()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -193,8 +196,45 @@ func createPngBuffer(img image.Image, fieldName string, fileName string) (string
 	if err != nil {
 		os.Exit(1)
 	}
-	writer.Close()
 	return writer.FormDataContentType(), body
+}
+
+func TestGetIcon(t *testing.T) {
+	e := echo.New()
+	h := createTestHandler()
+	defer h.closeTestHandler()
+
+	tokenStr := createTestToken(&h)
+
+	// 未アップロード
+	req := httptest.NewRequest(http.MethodGet, "/geticon", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	assert.EqualError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.GetIcon)(c),
+		echo.NewHTTPError(http.StatusNotFound, "not found icon").Error())
+
+	// 画像生成
+	img := createImage(256, 256)
+
+	os.MkdirAll(h.StoragePath+"icon/", os.ModePerm)
+	file, err := os.Create(h.StoragePath + "icon/1.png")
+	png.Encode(file, img)
+	assert.NoError(t, err)
+
+	// 成功
+	req = httptest.NewRequest(http.MethodGet, "/geticon", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec = httptest.NewRecorder()
+	c = e.NewContext(req, rec)
+
+	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.GetIcon)(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		uploadFile, err := ioutil.ReadFile(h.StoragePath + "icon/1.png")
+		assert.NoError(t, err)
+		assert.ElementsMatch(t, rec.Body.Bytes(), uploadFile)
+	}
+
 }
 
 func TestSetIcon(t *testing.T) {
@@ -218,14 +258,12 @@ func TestSetIcon(t *testing.T) {
 	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.SetIcon)(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		uploadFile, err := os.Open(h.StoragePath + "icon/1.png")
-		if assert.NoError(t, err) {
-			uploadImg, err := png.Decode(uploadFile)
-			if assert.NoError(t, err) {
-				for x := 0; x < 256; x++ {
-					for y := 0; y < 256; y++ {
-						assert.Equal(t, img.At(x, y), uploadImg.At(x, y))
-					}
-				}
+		assert.NoError(t, err)
+		uploadImg, err := png.Decode(uploadFile)
+		assert.NoError(t, err)
+		for x := 0; x < 256; x++ {
+			for y := 0; y < 256; y++ {
+				assert.Equal(t, img.At(x, y), uploadImg.At(x, y))
 			}
 		}
 	}

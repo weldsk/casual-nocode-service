@@ -124,6 +124,7 @@ func (h *Handler) GetUserInfo(c echo.Context) error {
 	})
 }
 
+// ユーザーアイコン取得
 func (h *Handler) GetIcon(c echo.Context) error {
 	id := token.GetId(c)
 	user := models.User{}
@@ -131,15 +132,13 @@ func (h *Handler) GetIcon(c echo.Context) error {
 	if result.Error != nil {
 		return result.Error
 	}
-
-	file, err := os.Open(h.StoragePath + "icon\\" + strconv.FormatUint(uint64(id), 10) + ".png")
+	filepath := h.StoragePath + "icon/" + strconv.FormatUint(uint64(id), 10) + ".png"
+	_, err := os.Stat(filepath)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusNotFound, "not found icon")
 	}
 
-	return c.JSON(http.StatusOK, echo.Map{
-		"icon": file,
-	})
+	return c.File(filepath)
 }
 
 // ユーザーアイコン設定
@@ -175,8 +174,12 @@ func (h *Handler) SetIcon(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "image size exceeds 256x256")
 	}
 
-	os.MkdirAll(h.StoragePath+"icon/", os.ModePerm)
-	dst, err := os.Create(h.StoragePath + "icon/" + strconv.FormatUint(uint64(id), 10) + ".png")
+	dirPath := h.StoragePath + "icon/"
+	err = os.MkdirAll(dirPath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	dst, err := os.Create(dirPath + strconv.FormatUint(uint64(id), 10) + ".png")
 	if err != nil {
 		return err
 	}
