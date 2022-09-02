@@ -4,6 +4,7 @@ import (
 	"casual-nocode-service/models"
 	"casual-nocode-service/token"
 	"image/png"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -186,6 +187,60 @@ func (h *Handler) SetIcon(c echo.Context) error {
 	defer dst.Close()
 
 	err = png.Encode(dst, image)
+	if err != nil {
+		return err
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
+// ユーザーマクロ取得
+func (h *Handler) GetMacro(c echo.Context) error {
+	id := token.GetId(c)
+	user := models.User{}
+	result := h.DB.Users.First(&user, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	filepath := h.StoragePath + "macro/" + strconv.FormatUint(uint64(id), 10) + ".png"
+	_, err := os.Stat(filepath)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "not found macro")
+	}
+
+	return c.File(filepath)
+}
+
+// ユーザーアイコン設定
+func (h *Handler) SetMacro(c echo.Context) error {
+	id := token.GetId(c)
+	user := models.User{}
+	result := h.DB.Users.First(&user, id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	macroFile, err := c.FormFile("macro")
+	if err != nil {
+		return err
+	}
+	reader, err := macroFile.Open()
+	if err != nil {
+		return err
+	}
+
+	dirPath := h.StoragePath + "macro/"
+	err = os.MkdirAll(dirPath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	dst, err := os.Create(dirPath + strconv.FormatUint(uint64(id), 10) + ".json")
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, reader)
 	if err != nil {
 		return err
 	}
