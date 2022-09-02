@@ -13,6 +13,7 @@ func main() {
 	dbUser := os.Getenv("SERVER_DBUSER")
 	dbPassword := os.Getenv("SERVER_DBPASS")
 	dbPath := os.Getenv("SERVER_DBPATH")
+	storagePath := os.Getenv("SERVER_STORAGEPATH")
 
 	dbConfig := database.DatabaseConfig{
 		Connection: database.MySql,
@@ -29,7 +30,7 @@ func main() {
 	db := database.Open(dbConfig)
 	defer db.Close()
 
-	h := handler.Handler{DB: db}
+	h := handler.Handler{DB: db, StoragePath: storagePath}
 
 	// ルーティング
 	router.Init(h)

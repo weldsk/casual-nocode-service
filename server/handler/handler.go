@@ -5,5 +5,6 @@ import (
 )
 
 type Handler struct {
-	DB database.Database
+	DB          database.Database
+	StoragePath string
 }

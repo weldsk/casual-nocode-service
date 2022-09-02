@@ -3,7 +3,10 @@ package handler
 import (
 	"casual-nocode-service/models"
 	"casual-nocode-service/token"
+	"image/png"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -111,9 +114,81 @@ func (h *Handler) SignUpUser(c echo.Context) error {
 func (h *Handler) GetUserInfo(c echo.Context) error {
 	id := token.GetId(c)
 	user := models.User{}
-	h.DB.Users.First(&user, id)
+	result := h.DB.Users.First(&user, id)
+	if result.Error != nil {
+		return result.Error
+	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"username": user.Name,
 		"email":    user.Email,
 	})
+}
+
+// ユーザーアイコン取得
+func (h *Handler) GetIcon(c echo.Context) error {
+	id := token.GetId(c)
+	user := models.User{}
+	result := h.DB.Users.First(&user, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	filepath := h.StoragePath + "icon/" + strconv.FormatUint(uint64(id), 10) + ".png"
+	_, err := os.Stat(filepath)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "not found icon")
+	}
+
+	return c.File(filepath)
+}
+
+// ユーザーアイコン設定
+func (h *Handler) SetIcon(c echo.Context) error {
+	id := token.GetId(c)
+	user := models.User{}
+	result := h.DB.Users.First(&user, id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	iconFile, err := c.FormFile("icon")
+	if err != nil {
+		return err
+	}
+
+	if iconFile.Size > 100*1024 {
+		return echo.NewHTTPError(http.StatusBadRequest, "too large file")
+	}
+
+	src, err := iconFile.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	image, err := png.Decode(src)
+	size := image.Bounds().Size()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnsupportedMediaType, "not supported file")
+	}
+	if size.X > 256 || size.Y > 256 {
+		return echo.NewHTTPError(http.StatusBadRequest, "image size exceeds 256x256")
+	}
+
+	dirPath := h.StoragePath + "icon/"
+	err = os.MkdirAll(dirPath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	dst, err := os.Create(dirPath + strconv.FormatUint(uint64(id), 10) + ".png")
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	err = png.Encode(dst, image)
+	if err != nil {
+		return err
+	}
+
+	return c.NoContent(http.StatusOK)
 }
