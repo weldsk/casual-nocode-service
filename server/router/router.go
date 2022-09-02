@@ -25,6 +25,8 @@ func Init(handler handler.Handler) *echo.Echo {
 	r.GET("/userinfo", handler.GetUserInfo)
 	r.POST("/seticon", handler.SetIcon)
 	r.GET("/geticon", handler.GetIcon)
+	r.POST("/setmacro", handler.SetMacro)
+	r.GET("/getmacro", handler.GetMacro)
 
 	e.Logger.Fatal(e.Start(":1323"))
 

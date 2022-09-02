@@ -202,7 +202,7 @@ func (h *Handler) GetMacro(c echo.Context) error {
 	if result.Error != nil {
 		return result.Error
 	}
-	filepath := h.StoragePath + "macro/" + strconv.FormatUint(uint64(id), 10) + ".png"
+	filepath := h.StoragePath + "macro/" + strconv.FormatUint(uint64(id), 10) + ".json"
 	_, err := os.Stat(filepath)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "not found macro")
@@ -211,7 +211,7 @@ func (h *Handler) GetMacro(c echo.Context) error {
 	return c.File(filepath)
 }
 
-// ユーザーアイコン設定
+// ユーザーマクロ設定
 func (h *Handler) SetMacro(c echo.Context) error {
 	id := token.GetId(c)
 	user := models.User{}
