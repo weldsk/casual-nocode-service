@@ -25,6 +25,7 @@ function EditorPage() {
         <div className="container">
           <div className="node-editor"></div>
         </div>
+        <h3>Node List</h3>
         <div className="dock"></div>
       </div>
       <div className="Editor-save-load">
