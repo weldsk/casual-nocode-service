@@ -1,7 +1,7 @@
 import prof from "../img/test.jpg";
 import { Component } from "react";
 import { Card, Button } from 'react-bootstrap';
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosResponse, AxiosError, Axios } from "axios";
 import authHeader from "../services/auth-header";
 import React, { useState, useRef } from 'react'
 import { useAsyncCallback } from 'react-async-hook'
@@ -51,43 +51,43 @@ export default class MyPage extends Component<{}, { name: string, email: string,
         const initialState = {
           file: null,
         }
-        const fileUpload = () => {
-          const inputRef = useRef(null)
-          const [formState, setFormState] = useState(initialState)
-          const [success, setSuccess] = useState(false)
-
-          const uploadFile = async (file) => {
-            if (!file) return
-
-            /* アップロード処理に見立てた時間のかかる処理 */
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-            await sleep(5000)
-
-            /* アップロード処理が成功したらフォームの状態を
-               初期化してsuccessステートをtrueにする */
-            setFormState(initialState)
-            setSuccess(true)
+        /* アップロード処理 */
+        const handleSubmit = async (event: React.MouseEvent) => {
+          event.preventDefault()
+          const submitData = new FormData()
+          if (fileInput.current instanceof HTMLInputElement && fileInput.current.files) {
+            submitData.append("image", fileInput.current.files[0])
+            await axios.post(process.env.REACT_APP_PRIVATE_API_URL + "/seticon", fileInput,
+              {
+                headers: {
+                  'content-type': 'multipart/form-data',
+                },
+              })
           }
-
-          const onFileInputChange = async (event) => {
-            const file = event.target.files[0]
-            await uploadFile(file)
-          }
-
-          const clickFileUploadButton = () => {
-            setSuccess(false)
-            inputRef.current.click()
-          }
-
-          const asyncEvent = useAsyncCallback(onFileInputChange);
-
         };
+        const fileInput = React.createRef<HTMLInputElement>()
+        const displayIcon = async () => {
+          console.log("bbbbbbbbbbbbbbbbb");
+          await axios.get(process.env.REACT_APP_PRIVATE_API_URL + "/geticon",
+            {
+              headers: {
+                'content-type': 'multipart/form-data',
+              },
+            }).then((response: AxiosResponse) => {
+              return (<img src={response.data} alt="ユーザー設定" title="ユーザー設定"></img>)
+            }).catch((error: AxiosError) => {
+              console.log("aaaaaaaaaaaaaaaa");
+              return (<img src="../img/defaulticon.png" alt="デフォルト" title="デフォルト"></img>)
+            })
+        };
+
         return (
           <div>
-            {/* <img src={prof} alt="picture" /> */}
-            <button onClick={fileUpload}>ファイルアップロード</button>
+            {displayIcon()}
+            <button onClick={handleSubmit}>ファイルアップロード</button>
             <input
               type="file"
+              ref={fileInput}
               accept="image/*"
               onChange={onFileInputChange}
             />
