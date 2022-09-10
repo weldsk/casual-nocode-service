@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Rete, { Node, NodeEditor } from "rete";
+import Rete, { Engine, Node, NodeEditor } from "rete";
 import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
 import AreaPlugin from "rete-area-plugin";
@@ -428,18 +428,21 @@ export async function createEditor(container: HTMLElement) {
   );
   editor.trigger("process");
   AreaPlugin.zoomAt(editor, editor.nodes);
-  return editor;
+  return { editor: editor, engine: engine };
 }
 
 export function useRete() {
   const [container, setContainer] = useState<HTMLElement>();
   const editorRef = useRef<NodeEditor>();
+  const engineRef = useRef<Engine>();
+
 
   useEffect(() => {
     if (container) {
       createEditor(container).then((value) => {
         console.log("created");
-        editorRef.current = value;
+        editorRef.current = value.editor;
+        engineRef.current = value.engine;
       });
     }
   }, [container]);
@@ -453,5 +456,5 @@ export function useRete() {
     };
   }, []);
 
-  return { contents: editorRef, setContainer: setContainer };
+  return { engine: engineRef, contents: editorRef, setContainer: setContainer };
 }
