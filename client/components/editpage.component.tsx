@@ -2,13 +2,10 @@ import { useRete } from "../services/edit-service/custom-rete";
 import "../App.css";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import authHeader from "../services/auth-header";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
-  Col,
   Modal,
-  Offcanvas,
-  Row,
   Toast,
   ToastContainer,
 } from "react-bootstrap";
