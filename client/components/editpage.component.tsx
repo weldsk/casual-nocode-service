@@ -29,10 +29,10 @@ function EditorPage() {
         <div className="dock"></div>
       </div>
       <div className="Editor-save-load">
-        <button onClick={handleClickSaveButton}>
+        <button className="Editor-save-load-button" onClick={handleClickSaveButton}>
           save
         </button>
-        <button onClick={handleClickLoadButton}>
+        <button className="Editor-save-load-button" onClick={handleClickLoadButton}>
           load
         </button>
       </div>
