@@ -4,19 +4,18 @@ import AreaPlugin from "rete-area-plugin";
 
 function EditorPage() {
   const props = useRete();
-  const container = props.container;
+  const contents = props.contents;
   const setContainer = props.setContainer;
   const handleClickSaveButton = () => {
-    if (container) {
-      localStorage.setItem('GRAPH_EDITOR_VIEW', JSON.stringify(container.toJSON()));
+    if (contents && contents.current) {
+      localStorage.setItem('GRAPH_EDITOR_VIEW', JSON.stringify(contents.current.toJSON()));
     }
   }
   const handleClickLoadButton = async () => {
     const data = localStorage.getItem('GRAPH_EDITOR_VIEW');
-    if (data && container) {
+    if (data && contents && contents.current) {
       const parse_data = JSON.parse(data);
-      await container.fromJSON(parse_data);
-      AreaPlugin.zoomAt(container, container.nodes);
+      await contents.current.fromJSON(parse_data);
     }
   }
   return (

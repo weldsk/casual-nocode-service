@@ -453,5 +453,5 @@ export function useRete() {
     };
   }, []);
 
-  return { container: editorRef.current, setContainer: setContainer };
+  return { contents: editorRef, setContainer: setContainer };
 }
