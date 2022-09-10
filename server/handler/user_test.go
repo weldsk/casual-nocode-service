@@ -282,3 +282,69 @@ func TestSetIcon(t *testing.T) {
 	assert.EqualError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.SetIcon)(c),
 		echo.NewHTTPError(http.StatusBadRequest, "image size exceeds 256x256").Error())
 }
+
+func TestGetMacro(t *testing.T) {
+	e := echo.New()
+	h := createTestHandler()
+	defer h.closeTestHandler()
+
+	tokenStr := createTestToken(&h)
+
+	// 未アップロード
+	req := httptest.NewRequest(http.MethodGet, "/getmacro", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	assert.EqualError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.GetMacro)(c),
+		echo.NewHTTPError(http.StatusNotFound, "not found macro").Error())
+
+	os.MkdirAll(h.StoragePath+"macro/", os.ModePerm)
+	file, err := os.Create(h.StoragePath + "macro/1.json")
+	assert.NoError(t, err)
+	_, err = file.WriteString("test")
+	assert.NoError(t, err)
+
+	// 成功
+	req = httptest.NewRequest(http.MethodGet, "/getmacro", nil)
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec = httptest.NewRecorder()
+	c = e.NewContext(req, rec)
+
+	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.GetMacro)(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		uploadFile, err := ioutil.ReadFile(h.StoragePath + "macro/1.json")
+		assert.NoError(t, err)
+		assert.ElementsMatch(t, rec.Body.Bytes(), uploadFile)
+	}
+
+}
+
+func TestSetMacro(t *testing.T) {
+	e := echo.New()
+	h := createTestHandler()
+	defer h.closeTestHandler()
+
+	tokenStr := createTestToken(&h)
+
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	file, err := writer.CreateFormFile("macro", "test.json")
+	assert.NoError(t, err)
+	_, err = file.Write([]byte("test"))
+	assert.NoError(t, err)
+	writer.Close()
+
+	// 成功
+	req := httptest.NewRequest(http.MethodPost, "/setmacro", body)
+	req.Header.Set(echo.HeaderContentType, writer.FormDataContentType())
+	req.Header.Set(echo.HeaderAuthorization, fmt.Sprintf(`Bearer %s`, tokenStr))
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	if assert.NoError(t, middleware.JWTWithConfig(token.GetJwtConfig())(h.SetMacro)(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		uploadFile, err := os.ReadFile(h.StoragePath + "macro/1.json")
+		assert.NoError(t, err)
+		assert.Equal(t, []byte("test"), uploadFile)
+	}
+}
