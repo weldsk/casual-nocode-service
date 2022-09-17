@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Rete, { Engine, Node, NodeEditor } from "rete";
+import Rete, { Node, NodeEditor } from "rete";
 import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
 import AreaPlugin from "rete-area-plugin";
@@ -8,8 +8,8 @@ import { MyNode } from "../../components/editor-node-view/retenode.component";
 import DockPlugin from "rete-dock-plugin";
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 
-let numSocket = new Rete.Socket("Number value");
-let strSocket = new Rete.Socket("String");
+const numSocket = new Rete.Socket("Number value");
+const strSocket = new Rete.Socket("String");
 
 class NumControl extends Rete.Control {
   static component = ({
@@ -135,8 +135,8 @@ class NumComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let out1 = new Rete.Output("num", "Number", numSocket);
-    let ctrl = new NumControl(this.editor, "num", node);
+    const out1 = new Rete.Output("num", "Number", numSocket);
+    const ctrl = new NumControl(this.editor, "num", node);
 
     node.addControl(ctrl).addOutput(out1);
   }
@@ -153,9 +153,9 @@ class TimeComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let inp1 = new Rete.Input("num1", "Number", numSocket);
-    let inp2 = new Rete.Input("num2", "Number2", numSocket);
-    let out = new Rete.Output("num", "Number", numSocket);
+    const inp1 = new Rete.Input("num1", "Number", numSocket);
+    const inp2 = new Rete.Input("num2", "Number2", numSocket);
+    const out = new Rete.Output("num", "Number", numSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
@@ -168,7 +168,7 @@ class TimeComponent extends Rete.Component {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs) {
-    let n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    const n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
 
     if (typeof n1 === "number") {
       const outputControl = this.editor?.nodes
@@ -189,8 +189,8 @@ class StrComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let out1 = new Rete.Output("str", "Number", strSocket);
-    let ctrl = new MessageControl(this.editor, "str", node);
+    const out1 = new Rete.Output("str", "Number", strSocket);
+    const ctrl = new MessageControl(this.editor, "str", node);
 
     node.addControl(ctrl).addOutput(out1);
   }
@@ -207,9 +207,9 @@ class AddComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let inp1 = new Rete.Input("num1", "Number", numSocket);
-    let inp2 = new Rete.Input("num2", "Number2", numSocket);
-    let out = new Rete.Output("num", "Number", numSocket);
+    const inp1 = new Rete.Input("num1", "Number", numSocket);
+    const inp2 = new Rete.Input("num2", "Number2", numSocket);
+    const out = new Rete.Output("num", "Number", numSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
@@ -221,10 +221,10 @@ class AddComponent extends Rete.Component {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs) {
-    let n1 = inputs["num1"].length ? inputs["num1"][0] : node.data["num1"];
-    let n2 = inputs["num2"].length ? inputs["num2"][0] : node.data["num2"];
+    const n1 = inputs["num1"].length ? inputs["num1"][0] : node.data["num1"];
+    const n2 = inputs["num2"].length ? inputs["num2"][0] : node.data["num2"];
     if (typeof n1 === "number" && typeof n2 === "number") {
-      let sum = n1 + n2;
+      const sum = n1 + n2;
       const outputControl = this.editor?.nodes
         ?.find((n) => n.id === node.id)
         ?.controls.get("preview");
@@ -243,9 +243,9 @@ class SubComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let inp1 = new Rete.Input("num1", "Number", numSocket);
-    let inp2 = new Rete.Input("num2", "Number2", numSocket);
-    let out = new Rete.Output("num", "Number", numSocket);
+    const inp1 = new Rete.Input("num1", "Number", numSocket);
+    const inp2 = new Rete.Input("num2", "Number2", numSocket);
+    const out = new Rete.Output("num", "Number", numSocket);
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
 
@@ -257,10 +257,10 @@ class SubComponent extends Rete.Component {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs) {
-    let n1 = inputs["num1"].length ? inputs["num1"][0] : node.data["num1"];
-    let n2 = inputs["num2"].length ? inputs["num2"][0] : node.data["num2"];
+    const n1 = inputs["num1"].length ? inputs["num1"][0] : node.data["num1"];
+    const n2 = inputs["num2"].length ? inputs["num2"][0] : node.data["num2"];
     if (typeof n1 === "number" && typeof n2 === "number") {
-      let sub = n1 - n2;
+      const sub = n1 - n2;
       const outputControl = this.editor?.nodes
         ?.find((n) => n.id === node.id)
         ?.controls.get("preview");
@@ -279,9 +279,9 @@ class IfComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let inp1 = new Rete.Input("num1", "Number", numSocket);
-    let inp2 = new Rete.Input("num2", "Number2", numSocket);
-    let out = new Rete.Output("num", "Number", numSocket);
+    const inp1 = new Rete.Input("num1", "Number", numSocket);
+    const inp2 = new Rete.Input("num2", "Number2", numSocket);
+    const out = new Rete.Output("num", "Number", numSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
@@ -294,8 +294,8 @@ class IfComponent extends Rete.Component {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs) {
-    let n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
-    let n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    const n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    const n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
     let cond = 0;
     if (typeof n1 === "number" && typeof n2 === "number") {
       if (n1 > n2) {
@@ -318,10 +318,10 @@ class CalComponent extends Rete.Component {
   }
 
   async builder(node: Node) {
-    let inp1 = new Rete.Input("num1", "Number", numSocket);
-    let inp2 = new Rete.Input("num2", "Number2", numSocket);
-    let inp3 = new Rete.Input("num3", "Number3", strSocket);
-    let out = new Rete.Output("num", "Number", numSocket);
+    const inp1 = new Rete.Input("num1", "Number", numSocket);
+    const inp2 = new Rete.Input("num2", "Number2", numSocket);
+    const inp3 = new Rete.Input("num3", "Number3", strSocket);
+    const out = new Rete.Output("num", "Number", numSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
@@ -336,9 +336,9 @@ class CalComponent extends Rete.Component {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs) {
-    let n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
-    let n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
-    let n3 = inputs["num3"].length ? inputs["num3"][0] : node.data.num3;
+    const n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
+    const n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    const n3 = inputs["num3"].length ? inputs["num3"][0] : node.data.num3;
     let result = 0;
     if (
       typeof n1 === "number" &&
@@ -370,7 +370,7 @@ class CalComponent extends Rete.Component {
 }
 
 export async function createEditor(container: HTMLElement) {
-  let components = [
+  const components = [
     new NumComponent(),
     new AddComponent(),
     new SubComponent(),
@@ -379,7 +379,7 @@ export async function createEditor(container: HTMLElement) {
     new IfComponent(),
   ];
 
-  let editor = new Rete.NodeEditor("demo@0.1.0", container);
+  const editor = new Rete.NodeEditor("demo@0.1.0", container);
   editor.use(ConnectionPlugin);
   editor.use(ReactRenderPlugin);
 
@@ -406,7 +406,7 @@ export async function createEditor(container: HTMLElement) {
     scaleExtent: { min: 1, max: 1 },
   } as any);
 
-  let engine = new Rete.Engine("demo@0.1.0");
+  const engine = new Rete.Engine("demo@0.1.0");
 
   components.forEach((c) => {
     editor.register(c);
@@ -428,21 +428,19 @@ export async function createEditor(container: HTMLElement) {
   );
   editor.trigger("process");
   AreaPlugin.zoomAt(editor, editor.nodes);
-  return { editor: editor, engine: engine };
+  return editor;
 }
 
 export function useRete() {
   const [container, setContainer] = useState<HTMLElement>();
-  const editorRef = useRef<NodeEditor>();
-  const engineRef = useRef<Engine>();
+  let editorRef = useRef<NodeEditor>();
 
 
   useEffect(() => {
     if (container) {
       createEditor(container).then((value) => {
         console.log("created");
-        editorRef.current = value.editor;
-        engineRef.current = value.engine;
+        editorRef.current = value;
       });
     }
   }, [container]);
@@ -456,5 +454,5 @@ export function useRete() {
     };
   }, []);
 
-  return { engine: engineRef, contents: editorRef, setContainer: setContainer };
+  return { contents: editorRef, setContainer: setContainer };
 }

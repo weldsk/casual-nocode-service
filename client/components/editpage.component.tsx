@@ -3,30 +3,87 @@ import "../App.css";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import authHeader from "../services/auth-header";
 import { useState } from "react";
-import {
-  Button,
-  Modal,
-  Toast,
-  ToastContainer,
-} from "react-bootstrap";
+import { Button, Modal, Toast, ToastContainer } from "react-bootstrap";
+
+const saveNotificationTexts = {
+  title: "Node Saving",
+  body: "Saving overwrites the currently saved contents.",
+  secondaryButton: "Close",
+  primaryButton: "Save",
+}
+const loadNotificationTexts = {
+  title: "Node Loading",
+  body: "The current canvas is deleted when loaded.",
+  secondaryButton: "Close",
+  primaryButton: "Load",
+}
 
 function EditorPage() {
   const props = useRete();
   const contents = props.contents;
   const setContainer = props.setContainer;
 
-  const [loadShow, setLoadShow] = useState(false);
-  const [saveShow, setSaveShow] = useState(false);
+  const [notificationShow, setNotificationShow] = useState(false);
   const [saveSuccessShow, setSuccessShow] = useState(false);
+  const [notificationTexts, setNotificationTexts] = useState({
+    title: "",
+    body: "",
+    secondaryButton: "",
+    primaryButton: "",
+  });
+  const [notificationHandleFlag, setNotificationHandleFlag] = useState(false);
 
-  const handleLoadClose = () => setLoadShow(false);
-  const handleLoadShow = () => setLoadShow(true);
+  const NotificationModel = () => {
+    return (
+      <Modal show={notificationShow} onHide={handleCloseNotification}>
+      <Modal.Header closeButton>
+        <Modal.Title>{notificationTexts.title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>{notificationTexts.body}</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseNotification}>
+          {notificationTexts.secondaryButton}
+        </Button>
+        <Button
+          variant="primary"
+          onClick={notificationHandleFlag
+              ? handleClickSaveButton
+              : handleClickLoadButton
+          }
+        >
+          {notificationTexts.primaryButton}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+    );
+  }
 
-  const handleSaveClose = () => setSaveShow(false);
-  const handleSaveShow = () => setSaveShow(true);
+  const handleCloseNotification = () => setNotificationShow(false);
+  const handleShowNotification = (
+    {
+      title,
+      body,
+      secondaryButton,
+      primaryButton,
+    }: {
+      title: string;
+      body: string;
+      secondaryButton: string;
+      primaryButton: string;
+    },
+    hanldeFlag: boolean) => {
+    setNotificationShow(true);
+    setNotificationTexts({
+      title: title,
+      body: body,
+      secondaryButton: secondaryButton,
+      primaryButton: primaryButton,
+    });
+    setNotificationHandleFlag(hanldeFlag);
+  };
 
   const handleClickSaveButton = () => {
-    handleSaveClose();
+    handleCloseNotification();
     if (contents && contents.current) {
       const jsonData = JSON.stringify(contents.current.toJSON());
       const blobJsonData = new Blob([jsonData], { type: "application/json" });
@@ -57,13 +114,14 @@ function EditorPage() {
   };
 
   const handleClickLoadButton = async () => {
-    handleLoadClose();
+    handleCloseNotification();
     axios
       .get(process.env.REACT_APP_PRIVATE_API_URL + "/getmacro", {
         headers: authHeader(),
       })
       .then((response: AxiosResponse) => {
         if (response.data && contents && contents.current) {
+          console.log(response.data);
           contents.current.fromJSON(response.data);
           setSuccessShow(true);
         } else {
@@ -91,34 +149,7 @@ function EditorPage() {
           <Toast.Body>Success</Toast.Body>
         </Toast>
       </ToastContainer>
-      <Modal show={saveShow} onHide={handleSaveClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Node Saving</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Saving overwrites the currently saved contents.</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleSaveClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClickSaveButton}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={loadShow} onHide={handleLoadClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Node Loading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>The current canvas is deleted when loaded.</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleLoadClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClickLoadButton}>
-            Load
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <NotificationModel />
       <div className="Editor-wrapper">
         <div className="editor">
           <div className="container">
@@ -127,8 +158,8 @@ function EditorPage() {
           <div className="dock"></div>
         </div>
         <div className="Editor-save-load">
-          <button onClick={handleSaveShow}>save</button>
-          <button onClick={handleLoadShow}>load</button>
+          <button onClick={()=>handleShowNotification(saveNotificationTexts,true)}>save</button>
+          <button onClick={()=>handleShowNotification(loadNotificationTexts, false)}>load</button>
         </div>
         <div
           className="Editor-Playfield"
