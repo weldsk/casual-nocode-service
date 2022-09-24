@@ -272,3 +272,68 @@
 [dock-tooltip][flow^="right"]:hover::after {
   animation: tooltips-horz 300ms ease-out forwards;
 }
+
+.node {
+  width: 220px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.node.Number, .node.Str {
+  background: rgb(92, 201, 245) !important;
+}
+
+.node.Add, .node.Sub, .node.Cal {
+  background: rgb(139, 255, 97) !important;
+}
+
+.node.If {
+  background: rgb(233, 197, 52) !important;
+}
+
+
+.node.Number .title, .node.Str .title {
+  background-color: rgb(60, 160, 200);
+}
+
+.node.Add .title, .node.Sub .title, .node.Cal .title {
+  background-color: rgb(82, 208, 37);
+}
+
+.node.If .title {
+  background-color: rgb(193, 162, 40);
+}
+
+
+.node .title {
+  width:100%;
+  border-radius: 5px 5px 0 0;
+  order: -3;
+}
+
+.node .output-title {
+  color:#003333 !important;
+}
+
+.node .control {
+  order:-1;
+  width:60%;
+}
+
+.node input{
+  width: 100%;
+}
+
+.node .input {
+  display: grid !important;
+  grid-template-columns: 1fr 9fr;
+}
+
+.node .input-title {
+  color:#003333 !important;
+}
+
+.node select {
+  width:100%;
+}

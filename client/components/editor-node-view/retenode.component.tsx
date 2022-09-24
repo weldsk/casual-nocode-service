@@ -5,11 +5,10 @@ export class MyNode extends Node {
   render() {
     const { node, bindSocket, bindControl } = this.props;
     const { outputs, controls, inputs, selected } = this.state;
-
     return (
-      <div className={`node ${selected}`} style={{ background: "grey" }} dock-tooltip={node.data["tooltip-msg"]}>
+      <div className={`node ${selected} ${node.name}`} style={{ background: "grey" }} dock-tooltip={node.data["tooltip-msg"]}>
         <div className="title">
-          {"<<"} {node.name} {">>"}
+          {node.name}
         </div>
         {/* Outputs */}
         {outputs.map(output => (
