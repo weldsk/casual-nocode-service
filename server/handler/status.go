@@ -1,4 +1,4 @@
-package controller
+package handler
 
 import (
 	"net/http"
@@ -6,6 +6,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func GetStatus(c echo.Context) error {
+func (h *Handler) GetStatus(c echo.Context) error {
 	return c.String(http.StatusOK, "Running")
 }

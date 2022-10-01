@@ -1,4 +1,4 @@
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -7,6 +7,7 @@ import SignUp from "./components/signup.component";
 import Home from "./components/home.component";
 import NotFoundPage from "./components/notfound.component";
 import MyPage from "./components/mypage.component";
+import EditorPage from "./components/editpage.component";
 
 import RedirectRoute from "./services/custom-router";
 import AuthProvider from "./services/use-auth";
@@ -23,17 +24,14 @@ const App:React.VFC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route element={<RedirectRoute
-            logined={true}
-            redirectPath={"/login"}
-          />}>
+          <Route
+            element={<RedirectRoute logined={true} redirectPath={"/login"} />}
+          >
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/editpage" element={<EditorPage />} />
           </Route>
 
-          <Route element={<RedirectRoute
-            logined={false}
-            redirectPath={"/"}
-          />}>
+          <Route element={<RedirectRoute logined={false} redirectPath={"/"} />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>

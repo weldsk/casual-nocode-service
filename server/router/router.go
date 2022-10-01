@@ -1,28 +1,34 @@
 package router
 
 import (
-	"casual-nocode-service/controller"
+	"casual-nocode-service/handler"
 	"casual-nocode-service/token"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
-func Init() {
+func Init(handler handler.Handler) *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.CORS())
 
 	// public
-	e.GET("/", controller.GetStatus)
-	e.POST("/login", controller.LoginUser)
-	e.POST("/signup", controller.SignUpUser)
-	e.GET("/status", controller.GetStatus)
+	e.GET("/", handler.GetStatus)
+	e.POST("/login", handler.LoginUser)
+	e.POST("/signup", handler.SignUpUser)
+	e.GET("/status", handler.GetStatus)
 
 	// JWT認証必要
 	r := e.Group("/restricted")
 	r.Use(middleware.JWTWithConfig(token.GetJwtConfig()))
-	r.GET("/status", controller.GetStatus)
-	r.GET("/userinfo", controller.GetUserInfo)
+	r.GET("/status", handler.GetStatus)
+	r.GET("/userinfo", handler.GetUserInfo)
+	r.POST("/seticon", handler.SetIcon)
+	r.GET("/geticon", handler.GetIcon)
+	r.POST("/setmacro", handler.SetMacro)
+	r.GET("/getmacro", handler.GetMacro)
 
 	e.Logger.Fatal(e.Start(":1323"))
+
+	return e
 }

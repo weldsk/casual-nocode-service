@@ -12,11 +12,13 @@ type User struct {
 	PasswordHashed []byte
 }
 
+// 認証
 func (u *User) Login(password string) bool {
 	err := bcrypt.CompareHashAndPassword(u.PasswordHashed, []byte(password))
 	return err == nil
 }
 
+// パスワード設定
 func (u *User) SetPassword(password string) error {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 
