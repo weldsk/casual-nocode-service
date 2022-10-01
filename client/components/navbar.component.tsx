@@ -1,6 +1,8 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../services/use-auth";
+import i18n from "../i18n/i18n";
+
 
 const NavigationBar = () => {
   const { isAuthenticated, processLogout } = useAuth();
@@ -9,7 +11,7 @@ const NavigationBar = () => {
       return (
         <Nav>
           <Nav.Link data-testid="mypage-nav" as={NavLink} to={"/mypage"}>
-            MyPage
+            {i18n.t("header.MyPage")}
           </Nav.Link>
           <Nav.Link data-testid="editpage-nav" as={NavLink} to={"/editpage"}>
             EditPage
@@ -28,7 +30,7 @@ const NavigationBar = () => {
       return (
         <Nav>
           <Nav.Link data-testid="login-nav" as={NavLink} to={"/login"}>
-            Login
+            {i18n.t("header.MyPage")}
           </Nav.Link>
           <Nav.Link data-testid="signup-nav" as={NavLink} to={"/signup"}>
             Sign up
