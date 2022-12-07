@@ -1,8 +1,8 @@
 # CNCS
 
-https://user-images.githubusercontent.com/56789504/206169905-b529855e-e1c2-47d6-843e-187e6063a411.PNG
+![figure1](https://user-images.githubusercontent.com/56789504/206169905-b529855e-e1c2-47d6-843e-187e6063a411.PNG)
 
-https://user-images.githubusercontent.com/56789504/206169950-985a8e5d-bea9-4bcc-9f22-b6c9aeac037c.PNG
+![figure2](https://user-images.githubusercontent.com/56789504/206169950-985a8e5d-bea9-4bcc-9f22-b6c9aeac037c.PNG)
 
 casual-nocode-serviceは簡単な計算式をスクラッチ形式で作成できるWebアプリです。
 四則演算及びifが使用でき、セーブ機能を使用してDB上に保存が可能です。また、DB上からロードが可能です。
